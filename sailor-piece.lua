@@ -1,4 +1,4 @@
-script_key="LTgQkSjr7zrtmwZYm72PU9KuGmGA5BFj6S";
+script_key="aDgJnOlAuVtVVAGGAjzULYXrBcFtQyHB";
 getgenv().SailorPieceConfig = {
     AutoFarm         = true,
     AutoQuest        = true,
