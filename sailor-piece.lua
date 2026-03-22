@@ -32,7 +32,7 @@ getgenv().SailorPieceConfig = {
     SkillTreePriority = {"Luck", "Damage", "CritChance", "CritDamage", "HP"},
     WebhookURL       = "https://discord.com/api/webhooks/1484989763399323679/RdEkKYN9PC2BskfGrRYnCMLxQksGP185e_uHzdG6EolqCUZKm6grkp5jex6JWeQmjiMy",
     FPSBoost         = true,
-    FPSLock          = 15,
+    FPSLock          = 10,
     HideMobVFX       = true,
 }
 loadstring(game:HttpGet("https://api.luarmor.net/files/v4/loaders/1169527463a6fb002d07c345110bc0aa.lua"))()
