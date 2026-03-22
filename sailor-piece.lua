@@ -31,7 +31,7 @@ getgenv().SailorPieceConfig = {
     AutoSkillTree    = true,
     SkillTreePriority = {"Luck", "Damage", "CritChance", "CritDamage", "HP"},
     WebhookURL       = "https://discord.com/api/webhooks/1484989763399323679/RdEkKYN9PC2BskfGrRYnCMLxQksGP185e_uHzdG6EolqCUZKm6grkp5jex6JWeQmjiMy",
-    FPSBoost         = false,
+    FPSBoost         = true,
     FPSLock          = 15,
     HideMobVFX       = true,
 }
