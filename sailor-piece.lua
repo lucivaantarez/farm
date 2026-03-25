@@ -11,7 +11,7 @@ getgenv().SailorPieceConfig = getgenv().SailorPieceConfig or {
         AutoRejoinIfHighRam = 5000,
         WebhookURL      = "https://discord.com/api/webhooks/1484989763399323679/RdEkKYN9PC2BskfGrRYnCMLxQksGP185e_uHzdG6EolqCUZKm6grkp5jex6JWeQmjiMy",
         FPSBoost        = true,
-        FPSLock         = 10,
+        FPSLock         = 15,
     },
     SkillTree = {
         Auto            = true,
@@ -24,13 +24,13 @@ getgenv().SailorPieceConfig = getgenv().SailorPieceConfig or {
             TargetRarity    = "Secret",
         },
         TargetRace      = "Kitsune",
-        TargetClan      = {"Monarch", "Eminence"}
+        TargetClan      = "Galevorn",
     },
     Artifact = {
         AutoEquip       = true,
         AutoUpgrade     = true,
         AutoDeleteTrash = true,
-        UpgradeSet      = {"Celestial Rupture"},-- Ashen Chronicles, Crownless Regalia, Black Horizon, Void Reaver, Celestial Rupture, Abyssal Crown
+        UpgradeSet      = {"Celestial Rupture"},
         UpgradeStopAt   = 15,
         TrashRarities   = {"Common", "Rare", "Epic"},
     },
