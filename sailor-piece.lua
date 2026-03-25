@@ -1,17 +1,38 @@
 script_key="aDgJnOlAuVtVVAGGAjzULYXrBcFtQyHB";
-getgenv().SailorPieceConfig = {
-    AutoRejoinIfHighRam = 5000,
+getgenv().SailorPieceConfig = getgenv().SailorPieceConfig or {
     OpenChests       = {
         "Common Chest",
         "Rare Chest",
         "Epic Chest",
         "Legendary Chest",
-        "Mythical Chest",
     },
-    TargetRace       = "Kitsune",
-    TargetClan       = "Monarch",
-    WebhookURL       = "https://discord.com/api/webhooks/1484989763399323679/RdEkKYN9PC2BskfGrRYnCMLxQksGP185e_uHzdG6EolqCUZKm6grkp5jex6JWeQmjiMy",
-    FPSBoost         = true,
-    FPSLock          = 10,
+    Debug            = false,
+    Performance = {
+        AutoRejoinIfHighRam = 5000,
+        WebhookURL      = "https://discord.com/api/webhooks/1484989763399323679/RdEkKYN9PC2BskfGrRYnCMLxQksGP185e_uHzdG6EolqCUZKm6grkp5jex6JWeQmjiMy",
+        FPSBoost        = true,
+        FPSLock         = 10,
+    },
+    SkillTree = {
+        Auto            = true,
+        Priority        = {"Luck", "Damage", "CritChance", "CritDamage", "HP"},
+    },
+    AutoStrongestMelee = true,
+    Reroll = {
+        Trait = {
+            Auto            = true,
+            TargetRarity    = "Secret",
+        },
+        TargetRace      = "Kitsune",
+        TargetClan      = "Monarch",
+    },
+    Artifact = {
+        AutoEquip       = true,
+        AutoUpgrade     = true,
+        AutoDeleteTrash = true,
+        UpgradeSet      = {"Celestial Rupture"},
+        UpgradeStopAt   = 15,
+        TrashRarities   = {"Common", "Rare", "Epic"},
+    },
 }
 loadstring(game:HttpGet("https://api.luarmor.net/files/v4/loaders/1169527463a6fb002d07c345110bc0aa.lua"))()
