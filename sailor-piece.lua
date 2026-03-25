@@ -24,7 +24,7 @@ getgenv().SailorPieceConfig = getgenv().SailorPieceConfig or {
             TargetRarity    = "Secret",
         },
         TargetRace      = "Kitsune",
-        TargetClan      = "Monarch",
+        TargetClan      = {"Monarch", "Eminence"}
     },
     Artifact = {
         AutoEquip       = true,
