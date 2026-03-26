@@ -6,12 +6,12 @@ getgenv().SailorPieceConfig = getgenv().SailorPieceConfig or {
         "Epic Chest",
         "Legendary Chest",
     },
-    Debug            = true,
+    Debug            = false,
     Performance = {
         AutoRejoinIfHighRam = 5000,
         WebhookURL      = "https://discord.com/api/webhooks/1484989763399323679/RdEkKYN9PC2BskfGrRYnCMLxQksGP185e_uHzdG6EolqCUZKm6grkp5jex6JWeQmjiMy",
         FPSBoost        = true,
-        FPSLock         = 8,
+        FPSLock         = 10,
     },
     SkillTree = {
         Auto            = true,
@@ -24,7 +24,7 @@ getgenv().SailorPieceConfig = getgenv().SailorPieceConfig or {
             TargetRarity    = "Secret",
         },
         TargetRace      = "Kitsune",
-        TargetClan      = "Galevorn",
+        TargetClan      = "Eminence",
     },
     Artifact = {
         AutoEquip       = true,
