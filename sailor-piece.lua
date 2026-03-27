@@ -5,7 +5,6 @@ getgenv().SailorPieceConfig = getgenv().SailorPieceConfig or {
         "Rare Chest",
         "Epic Chest",
         "Legendary Chest",
-        "Mythical Chest",
     },
     Debug            = false,
     Performance = {
