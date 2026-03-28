@@ -6,6 +6,8 @@ getgenv().SailorPieceConfig = getgenv().SailorPieceConfig or {
         "Epic Chest",
         "Legendary Chest",
     },
+    AutoAscend = true,
+    AutoUpgradeAscend = true,
     Debug            = false,
     Performance = {
         AutoRejoinIfHighRam = 5000,
@@ -23,14 +25,14 @@ getgenv().SailorPieceConfig = getgenv().SailorPieceConfig or {
             Auto            = true,
             TargetRarity    = "Secret",
         },
-        TargetRace      = "Kitsune",
+        TargetRace      = {"Kitsune"},
         TargetClan      = {"Eminence", "Monarch"},
-    },
+        },
     Artifact = {
         AutoEquip       = true,
         AutoUpgrade     = true,
         AutoDeleteTrash = true,
-        UpgradeSet      = {"Celestial Rupture"},
+        UpgradeSet      = {"Celestial Rupture"},-- Ashen Chronicles, Crownless Regalia, Black Horizon, Void Reaver, Celestial Rupture, Abyssal Crown
         UpgradeStopAt   = 15,
         TrashRarities   = {"Common", "Rare", "Epic"},
     },
