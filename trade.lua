@@ -4,10 +4,11 @@ getgenv().AutoTradeConfig = {
     Items = {
         "Race Reroll",
         "Clan Reroll",
+        "Trait Reroll",
         "Mythical Chest",
+        "Secret Chest",
         "Aura Crate",
         "Cosmetic Crate",
-        "Trait Reroll",
         "Abyss Sigil",
         "Broken Sword",
         "Passive Shard",
