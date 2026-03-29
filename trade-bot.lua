@@ -1,6 +1,13 @@
+--[[
+    Auto Trade (Gom Item) - Sailor Piece
+    Chạy trên CẢ 2 acc: clone gửi trade + add item, main tự accept + ready + confirm
+]]
 script_key="aDgJnOlAuVtVVAGGAjzULYXrBcFtQyHB";
 getgenv().AutoTradeConfig = {
+    -- Tên acc main
     MainAccount = "mimabau1904",
+
+    -- Danh sách tên item muốn trade 
     Items = {
         "Race Reroll",
         "Clan Reroll",
