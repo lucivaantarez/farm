@@ -1,4 +1,4 @@
-Script_key="aDgJnOlAuVtVVAGGAjzULYXrBcFtQyHB";
+script_key="aDgJnOlAuVtVVAGGAjzULYXrBcFtQyHB";
 getgenv().AutoTradeConfig = {
     MainAccount = "mimabau1904",
     Items = {
