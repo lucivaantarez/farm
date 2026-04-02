@@ -71,7 +71,6 @@ getgenv().AutoTradeConfig = {
         "Cursed Finger",
         "Dismantle Fang",
         "Crimson Heart",
-        "Vessel Ring",
         "Malevolent Soul",
         "Awakened Cursed Finger",
         "Battle Sigil",
