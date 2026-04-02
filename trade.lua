@@ -89,7 +89,7 @@ getgenv().AutoTradeConfig = {
         "Imperial Seal",
         "Jade Tablet",
         "Tide Remnant",
-        "Gale Essence"
+        "Gale Essence",
     },
 }
 loadstring(game:HttpGet("https://api.luarmor.net/files/v4/loaders/75c7fe88bf77410a404199a69629aae3.lua"))()
