@@ -1,6 +1,8 @@
 script_key="aDgJnOlAuVtVVAGGAjzULYXrBcFtQyHB";
 getgenv().AutoTradeConfig = {
-    MainAccount = "mimabau1904",
+    MainAccount = {
+        "mimabau1904",
+    }
     Items = {
         "Race Reroll",
         "Clan Reroll",
