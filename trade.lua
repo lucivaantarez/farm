@@ -18,7 +18,6 @@ getgenv().AutoTradeConfig = {
         "Secret Chest",
         "Aura Crate",
         "Cosmetic Crate",
-        "Limitless Key",
         "Infinity Essence",
         "Blue Singularity",
         "Reversal Pulse",
