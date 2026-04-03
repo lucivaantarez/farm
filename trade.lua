@@ -54,6 +54,7 @@ getgenv().AutoTradeConfig = {
         "Shadow Remnant",
         "Magic Shard",
         "Void Seed",
+        "Rush Key",
         "Umbral Capsule",
         "Dungeon Ticket",
         "Monarch Core",
