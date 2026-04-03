@@ -72,7 +72,6 @@ getgenv().AutoTradeConfig = {
         "Cursed Finger",
         "Dismantle Fang",
         "Crimson Heart",
-        "Malevolent Soul",
         "Battle Sigil",
         "Path Fragment",
         "Eternal Core",
