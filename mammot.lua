@@ -21,7 +21,7 @@ getgenv().sailorPieceConfig = {
     REROLL_CLAN_UNTIL = { "Monarch", "Eminence" },
     REROLL_TRAIT_UNTIL = { "Overlord", "Cataclysm", "Singularity", "Celestial", "Emperor" },
     REROLL_STAT_UNTIL = { ["Damage"] = "S", ["Defense"] = "S", ["CooldownReduction"] = "S", ["CritChance"] = "S", ["CritDamage"] = "S", ["DamageReduction"] = "S", ["Luck"] = "SSS" },
-    REROLL_PASSIVE_UNTIL = { ["Gryphon"] = { "Fortune Chosen", "Executioner", "Damage V" }, ["Ichigo"] = { "Fortune Chosen", "Executioner", "Damage V" } },
+    REROLL_PASSIVE_UNTIL = { ["Gryphon"] = { "Fortune Chosen", "Executioner", "Damage V" }, ["Ichigo"] = { "Fortune Chosen", "Executioner", "Damage V" }, ["Strongest in History"] = { "Fortune Chosen", "Executioner", "Damage V" } },
     REROLL_POWER_UNTIL = { "Cursebrand", "Colossus", "Eternal", "Abyssal", "Apex" },
 
     DELETE_ARTIFACT_RARITY = { "Common", "Rare" },
