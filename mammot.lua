@@ -1,4 +1,4 @@
-script_key="";
+script_key="YrMGlHVZJYWpvtBaeKtZJOAtEBmcQbkQ";
 setfpscap(10)
 
 getgenv().sailorPieceConfig = {  
@@ -14,7 +14,7 @@ getgenv().sailorPieceConfig = {
     BLESS_WEAPON = { ["Ichigo"] = 10, ["Gryphon"] = 6, ["Dark Blade"] = 3 },
 
     STAT_POINT_PERCENTAGE = { ["Sword"] = 90, ["Defense"] = 10, ["Melee"] = 0, ["Power"] = 0 },
-    USE_ITEM = { "Common Chest", "Rare Chest", "Epic Chest", "Legendary Chest", "Mythical Chest", "Aura Crate (Untradeable)", "Cosmetic Crate (Untradeable)", "Secret Chest (Untradeable)" },
+    USE_ITEM = { "Common Chest", "Rare Chest", "Epic Chest", "Legendary Chest", "Aura Crate (Untradeable)", "Cosmetic Crate (Untradeable)", "Secret Chest (Untradeable)" },
     BUY_MERCHANT = { "Clan Reroll" },
 
     REROLL_RACE_UNTIL = "Kitsune",
@@ -29,11 +29,11 @@ getgenv().sailorPieceConfig = {
 
     -- Autotrade
     TRADE_USERNAME = "FinnIsabellaYT789",
-    TRADE_ITEM = {},
+    TRADE_ITEM = { "Race Reroll", "Clan Reroll", "Trait Reroll", "Haki Color Reroll", "Mythical Chest", "Secret Chest", "Aura Crate", "Cosmetic Crate", "Infinity Essence", "Blue Singularity", "Reversal Pulse", "Cursed Flesh", "Divine Grail", "Throne Remnant", "Ancient Shard", "Golden Essence", "Phantasm Core", "Broken Sword", "Azure Heart", "Silent Storm", "Yamato Essence", "Frozen Will", "Chrysalis Sigil", "Evolution Fragment", "Transcendent Core", "Fusion Ring", "Worthiness Fragment", "Hogyoku Frag", "Mirage Pendant", "Illusion Prism", "Reiatsu Core", "Boss Ticket", "Upper Seal", "Moon Crest", "Crescent Shard", "Lunar Essence", "Demon Remnant", "Abyss Sigil", "Atomic Core", "Atomic Omen", "Eminence Essence", "Shadow Remnant", "Magic Shard", "Void Seed", "Rush Key", "Umbral Capsule", "Dungeon Ticket", "Monarch Core", "Monarch Essence", "Kamish Dagger", "Shadow Crystal", "Abyss Edge", "Dark Ring", "Shadow Heart", "Dark Grail", "Corrupt Crown", "Corruption Core", "Alter Essence", "Morgan Remnant", "Cursed Finger", "Dismantle Fang", "Crimson Heart", "Battle Sigil", "Path Fragment", "Eternal Core", "Power Remnant", "Tempest Relic", "Sage Pulse", "Tempest Seal", "Slime Remnant", "Slime Core", "Calamity Seal", "Boss Rush Ticket", "Dungeon Key", "Tower Key", "Boss Key", "Passive Shard", "Power Shard", "Imperial Seal", "Jade Tablet", "Tide Remnant", "Gale Essence" },
 
     -- Discord
     WEBHOOK_ITEM_NAME = { "Aura Crate", "Cosmetic Crate" },
-    WEBHOOK_URL = "",
+    WEBHOOK_URL = "https://discord.com/api/webhooks/1489367505226170430/3W21u4vaWuzWM4Mi7vf9e_jKm_XiTWh9x3GVGAFjqkIKQhErWNd4Ex_ohmoBfE0W1M7w",
     DISCORD_ID = "",
     WEBHOOK_NOTE = "",
     SHOW_PUBLIC_DISCORD_ID = false,
