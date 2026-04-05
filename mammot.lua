@@ -17,7 +17,7 @@ getgenv().sailorPieceConfig = {
     USE_ITEM = { "Common Chest", "Rare Chest", "Epic Chest", "Legendary Chest", "Aura Crate (Untradeable)", "Cosmetic Crate (Untradeable)", "Secret Chest (Untradeable)" },
     BUY_MERCHANT = { "Clan Reroll" },
 
-    REROLL_RACE_UNTIL = "Kitsune",
+    REROLL_RACE_UNTIL = { "Kitsune" }
     REROLL_CLAN_UNTIL = { "Monarch", "Eminence" },
     REROLL_TRAIT_UNTIL = { "Overlord", "Cataclysm", "Singularity", "Celestial", "Emperor" },
     REROLL_STAT_UNTIL = { ["Damage"] = "S", ["Defense"] = "S", ["CooldownReduction"] = "S", ["CritChance"] = "S", ["CritDamage"] = "S", ["DamageReduction"] = "S", ["Luck"] = "SSS" },
