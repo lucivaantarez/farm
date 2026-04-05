@@ -21,7 +21,6 @@ getgenv().AutoTradeConfig = {
         "Infinity Essence",
         "Blue Singularity",
         "Reversal Pulse",
-        "Cursed Flesh",
         "Divine Grail",
         "Throne Remnant",
         "Ancient Shard",
