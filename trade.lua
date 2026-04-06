@@ -76,7 +76,6 @@ getgenv().AutoTradeConfig = {
         "Eternal Core",
         "Power Remnant",
         "Tempest Relic",
-        "Tempest Seal",
         "Slime Remnant",
         "Slime Core",
         "Calamity Seal",
