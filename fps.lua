@@ -1,6 +1,6 @@
 if not game:IsLoaded() then game.Loaded:Wait() end
 task.wait(2)
-print("Starting Ultimate Codex AFK Script (DPI 600-900 Optimized)...")
+print("Starting Ultimate Codex AFK Script (Top-Layer Optimized)...")
 
 local Workspace = game:GetService("Workspace")
 local Lighting = game:GetService("Lighting")
@@ -32,7 +32,7 @@ pcall_func(function()
 end)
 
 -- ==========================================
--- 2. DPI-OPTIMIZED CUSTOM DASHBOARD
+-- 2. TOP-LAYER DPI CUSTOM DASHBOARD
 -- ==========================================
 local startOsTime = os.time()
 local lastExecutedStr = os.date("!%d/%m/%H:%M", os.time() + (7 * 3600)) 
@@ -41,7 +41,9 @@ local cleanUsername = LocalPlayer and LocalPlayer.Name or "Unknown"
 local afkGui = Instance.new("ScreenGui")
 afkGui.Name = "CodexAFK"
 afkGui.IgnoreGuiInset = true
-afkGui.DisplayOrder = 999999
+-- MAX DISPLAY ORDER: Forces it on top of Ronix and other menus
+afkGui.DisplayOrder = 2147483647 
+afkGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
 
 if not pcall_func(function() afkGui.Parent = CoreGui end) then
     afkGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
@@ -51,18 +53,20 @@ local blackScreen = Instance.new("TextButton")
 blackScreen.Size = UDim2.new(1, 0, 1, 0)
 blackScreen.BackgroundColor3 = Color3.new(0, 0, 0)
 blackScreen.Text = ""
+blackScreen.ZIndex = 10 -- High ZIndex for protection
 blackScreen.AutoButtonColor = false
 blackScreen.Parent = afkGui
 
 local container = Instance.new("Frame")
 container.Size = UDim2.new(1, 0, 1, 0)
 container.BackgroundTransparency = 1
+container.ZIndex = 11
 container.Parent = blackScreen
 
 local listLayout = Instance.new("UIListLayout")
 listLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 listLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-listLayout.Padding = UDim.new(0, 0) -- Tight but no overlapping
+listLayout.Padding = UDim.new(0, 0) 
 listLayout.Parent = container
 
 -- LINE 1: USERNAME (Size 35)
@@ -72,6 +76,7 @@ userLabel.BackgroundTransparency = 1
 userLabel.TextColor3 = Color3.new(1, 1, 1)
 userLabel.TextSize = 35
 userLabel.Font = mainFont
+userLabel.ZIndex = 12
 userLabel.Text = cleanUsername
 userLabel.Parent = container
 
@@ -80,8 +85,9 @@ local mainInfoLabel = Instance.new("TextLabel")
 mainInfoLabel.Size = UDim2.new(1, 0, 0, 80) 
 mainInfoLabel.BackgroundTransparency = 1
 mainInfoLabel.TextColor3 = Color3.new(1, 1, 1)
-mainInfoLabel.TextSize = 70 -- Proportional 2x
+mainInfoLabel.TextSize = 70 
 mainInfoLabel.Font = mainFont
+mainInfoLabel.ZIndex = 12
 mainInfoLabel.Text = "0 | 00:00:00"
 mainInfoLabel.Parent = container
 
@@ -92,6 +98,7 @@ dateLabel.BackgroundTransparency = 1
 dateLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
 dateLabel.TextSize = 35
 dateLabel.Font = mainFont
+dateLabel.ZIndex = 12
 dateLabel.Text = lastExecutedStr
 dateLabel.Parent = container
 
@@ -104,6 +111,7 @@ toggleBtn.BackgroundColor3 = uiDark
 toggleBtn.TextColor3 = Color3.new(1, 1, 1)
 toggleBtn.TextSize = 35
 toggleBtn.Font = mainFont
+toggleBtn.ZIndex = 2147483647 -- Max ZIndex for the toggle
 toggleBtn.Text = "AFK"
 toggleBtn.BorderSizePixel = 0
 toggleBtn.Visible = false
@@ -139,7 +147,7 @@ task.spawn(function()
 end)
 
 -- ==========================================
--- 3. WORLD CLEANUP
+-- 3. WORLD OPTIMIZATION
 -- ==========================================
 local ClassActions = {
     ["Sound"] = function(o) o.Playing = false; o.Volume = 0 end,
@@ -244,4 +252,4 @@ task.spawn(function()
     end
 end)
 
-print("DPI Optimized Script Running.")
+print("Top-Layer DPI Optimized Script Running.")
