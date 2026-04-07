@@ -1,6 +1,13 @@
+-- ==========================================
+-- 0. EXECUTOR-LEVEL FPS CAP
+-- ==========================================
+pcall(function() 
+    setfpscap(10) -- Limits the game engine to 10 FPS to save Redfinger resources
+end)
+
 if not game:IsLoaded() then game.Loaded:Wait() end
 task.wait(2)
-print("Starting Ultimate Codex AFK Script (Top-Layer Optimized)...")
+print("Starting Ultimate Codex AFK Script (10 FPS Cap Active)...")
 
 local Workspace = game:GetService("Workspace")
 local Lighting = game:GetService("Lighting")
@@ -35,14 +42,14 @@ end)
 -- 2. TOP-LAYER DPI CUSTOM DASHBOARD
 -- ==========================================
 local startOsTime = os.time()
+-- Hardcoded GMT+7 calculation for Indonesian Time (dd/mm/hh:mm)
 local lastExecutedStr = os.date("!%d/%m/%H:%M", os.time() + (7 * 3600)) 
 local cleanUsername = LocalPlayer and LocalPlayer.Name or "Unknown"
 
 local afkGui = Instance.new("ScreenGui")
 afkGui.Name = "CodexAFK"
 afkGui.IgnoreGuiInset = true
--- MAX DISPLAY ORDER: Forces it on top of Ronix and other menus
-afkGui.DisplayOrder = 2147483647 
+afkGui.DisplayOrder = 2147483647 -- Absolute Max (Above Ronix UI)
 afkGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
 
 if not pcall_func(function() afkGui.Parent = CoreGui end) then
@@ -53,7 +60,7 @@ local blackScreen = Instance.new("TextButton")
 blackScreen.Size = UDim2.new(1, 0, 1, 0)
 blackScreen.BackgroundColor3 = Color3.new(0, 0, 0)
 blackScreen.Text = ""
-blackScreen.ZIndex = 10 -- High ZIndex for protection
+blackScreen.ZIndex = 10
 blackScreen.AutoButtonColor = false
 blackScreen.Parent = afkGui
 
@@ -91,7 +98,7 @@ mainInfoLabel.ZIndex = 12
 mainInfoLabel.Text = "0 | 00:00:00"
 mainInfoLabel.Parent = container
 
--- LINE 3: DATE (Size 35)
+-- LINE 3: DATE (GMT+7 Style)
 local dateLabel = Instance.new("TextLabel")
 dateLabel.Size = UDim2.new(1, 0, 0, 40)
 dateLabel.BackgroundTransparency = 1
@@ -111,13 +118,12 @@ toggleBtn.BackgroundColor3 = uiDark
 toggleBtn.TextColor3 = Color3.new(1, 1, 1)
 toggleBtn.TextSize = 35
 toggleBtn.Font = mainFont
-toggleBtn.ZIndex = 2147483647 -- Max ZIndex for the toggle
+toggleBtn.ZIndex = 2147483647
 toggleBtn.Text = "AFK"
 toggleBtn.BorderSizePixel = 0
 toggleBtn.Visible = false
 toggleBtn.Parent = afkGui
 
--- Toggle Logic
 local function setBlackScreen(state)
     blackScreen.Visible = state
     toggleBtn.Visible = not state
@@ -147,7 +153,7 @@ task.spawn(function()
 end)
 
 -- ==========================================
--- 3. WORLD OPTIMIZATION
+-- 3. WORLD OPTIMIZATION & CLEANUP
 -- ==========================================
 local ClassActions = {
     ["Sound"] = function(o) o.Playing = false; o.Volume = 0 end,
@@ -252,4 +258,4 @@ task.spawn(function()
     end
 end)
 
-print("Top-Layer DPI Optimized Script Running.")
+print("10 FPS Limit Dashboard Running.")
