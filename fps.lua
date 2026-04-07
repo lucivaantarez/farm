@@ -2,12 +2,12 @@
 -- 0. EXECUTOR-LEVEL FPS CAP
 -- ==========================================
 pcall(function() 
-    setfpscap(10) -- Limits the game engine to 10 FPS to save Redfinger resources
+    setfpscap(10) 
 end)
 
 if not game:IsLoaded() then game.Loaded:Wait() end
 task.wait(2)
-print("Starting Ultimate Codex AFK Script (10 FPS Cap Active)...")
+print("Starting Ultimate Codex AFK Script (Top-Layer Enforcer Active)...")
 
 local Workspace = game:GetService("Workspace")
 local Lighting = game:GetService("Lighting")
@@ -27,7 +27,7 @@ local task_wait = task.wait
 local pcall_func = pcall
 
 -- ==========================================
--- 1. GRAPHICS, AUDIO & PHYSICS THROTTLE
+-- 1. GRAPHICS & PHYSICS THROTTLE
 -- ==========================================
 pcall_func(function() 
     settings().Rendering.QualityLevel = Enum.QualityLevel.Level01 
@@ -39,18 +39,30 @@ pcall_func(function()
 end)
 
 -- ==========================================
--- 2. TOP-LAYER DPI CUSTOM DASHBOARD
+-- 2. TOP-LAYER ENFORCED DASHBOARD (DPI 600-900)
 -- ==========================================
 local startOsTime = os.time()
--- Hardcoded GMT+7 calculation for Indonesian Time (dd/mm/hh:mm)
+-- Forced GMT+7 Indonesian Time
 local lastExecutedStr = os.date("!%d/%m/%H:%M", os.time() + (7 * 3600)) 
 local cleanUsername = LocalPlayer and LocalPlayer.Name or "Unknown"
 
 local afkGui = Instance.new("ScreenGui")
 afkGui.Name = "CodexAFK"
 afkGui.IgnoreGuiInset = true
-afkGui.DisplayOrder = 2147483647 -- Absolute Max (Above Ronix UI)
+afkGui.DisplayOrder = 2147483647 -- Absolute Engine Limit
 afkGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
+
+-- Layer Enforcer: Constantly forces the GUI to the top of CoreGui
+task.spawn(function()
+    while task.wait(1) do
+        afkGui.DisplayOrder = 2147483647
+        pcall(function()
+            if afkGui.Parent ~= CoreGui then
+                afkGui.Parent = CoreGui
+            end
+        end)
+    end
+end)
 
 if not pcall_func(function() afkGui.Parent = CoreGui end) then
     afkGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
@@ -60,14 +72,14 @@ local blackScreen = Instance.new("TextButton")
 blackScreen.Size = UDim2.new(1, 0, 1, 0)
 blackScreen.BackgroundColor3 = Color3.new(0, 0, 0)
 blackScreen.Text = ""
-blackScreen.ZIndex = 10
+blackScreen.ZIndex = 2147483645 -- Protecting the black background layer
 blackScreen.AutoButtonColor = false
 blackScreen.Parent = afkGui
 
 local container = Instance.new("Frame")
 container.Size = UDim2.new(1, 0, 1, 0)
 container.BackgroundTransparency = 1
-container.ZIndex = 11
+container.ZIndex = 2147483646
 container.Parent = blackScreen
 
 local listLayout = Instance.new("UIListLayout")
@@ -76,40 +88,40 @@ listLayout.VerticalAlignment = Enum.VerticalAlignment.Center
 listLayout.Padding = UDim.new(0, 0) 
 listLayout.Parent = container
 
--- LINE 1: USERNAME (Size 35)
+-- LINE 1: USERNAME (DPI Optimized)
 local userLabel = Instance.new("TextLabel")
 userLabel.Size = UDim2.new(1, 0, 0, 40)
 userLabel.BackgroundTransparency = 1
 userLabel.TextColor3 = Color3.new(1, 1, 1)
 userLabel.TextSize = 35
 userLabel.Font = mainFont
-userLabel.ZIndex = 12
+userLabel.ZIndex = 2147483647
 userLabel.Text = cleanUsername
 userLabel.Parent = container
 
--- LINE 2: FPS | UPTIME (Size 70)
+-- LINE 2: FPS | UPTIME (DPI Optimized)
 local mainInfoLabel = Instance.new("TextLabel")
 mainInfoLabel.Size = UDim2.new(1, 0, 0, 80) 
 mainInfoLabel.BackgroundTransparency = 1
 mainInfoLabel.TextColor3 = Color3.new(1, 1, 1)
 mainInfoLabel.TextSize = 70 
 mainInfoLabel.Font = mainFont
-mainInfoLabel.ZIndex = 12
+mainInfoLabel.ZIndex = 2147483647
 mainInfoLabel.Text = "0 | 00:00:00"
 mainInfoLabel.Parent = container
 
--- LINE 3: DATE (GMT+7 Style)
+-- LINE 3: DATE (DPI Optimized)
 local dateLabel = Instance.new("TextLabel")
 dateLabel.Size = UDim2.new(1, 0, 0, 40)
 dateLabel.BackgroundTransparency = 1
 dateLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
 dateLabel.TextSize = 35
 dateLabel.Font = mainFont
-dateLabel.ZIndex = 12
+dateLabel.ZIndex = 2147483647
 dateLabel.Text = lastExecutedStr
 dateLabel.Parent = container
 
--- AFK TOGGLE BUTTON
+-- AFK TOGGLE BUTTON (Super-High Priority)
 local toggleBtn = Instance.new("TextButton")
 toggleBtn.Size = UDim2.new(0, 160, 0, 80)
 toggleBtn.AnchorPoint = Vector2.new(1, 0)
@@ -124,6 +136,7 @@ toggleBtn.BorderSizePixel = 0
 toggleBtn.Visible = false
 toggleBtn.Parent = afkGui
 
+-- Toggle Logic
 local function setBlackScreen(state)
     blackScreen.Visible = state
     toggleBtn.Visible = not state
@@ -153,7 +166,7 @@ task.spawn(function()
 end)
 
 -- ==========================================
--- 3. WORLD OPTIMIZATION & CLEANUP
+-- 3. WORLD OPTIMIZATION
 -- ==========================================
 local ClassActions = {
     ["Sound"] = function(o) o.Playing = false; o.Volume = 0 end,
@@ -258,4 +271,4 @@ task.spawn(function()
     end
 end)
 
-print("10 FPS Limit Dashboard Running.")
+print("Layer-Enforced DPI Optimized Script Running.")
