@@ -1,6 +1,6 @@
 if not game:IsLoaded() then game.Loaded:Wait() end
 task.wait(2)
-print("Starting Ultimate Codex AFK Script (GMT+7 Forced)...")
+print("Starting Ultimate Codex AFK Script (DPI 600-900 Optimized)...")
 
 local Workspace = game:GetService("Workspace")
 local Lighting = game:GetService("Lighting")
@@ -32,10 +32,9 @@ pcall_func(function()
 end)
 
 -- ==========================================
--- 2. CUSTOM DASHBOARD GUI (FORCED GMT+7)
+-- 2. DPI-OPTIMIZED CUSTOM DASHBOARD
 -- ==========================================
 local startOsTime = os.time()
--- HARDCODED GMT+7 calculation for Indonesian Time
 local lastExecutedStr = os.date("!%d/%m/%H:%M", os.time() + (7 * 3600)) 
 local cleanUsername = LocalPlayer and LocalPlayer.Name or "Unknown"
 
@@ -63,47 +62,47 @@ container.Parent = blackScreen
 local listLayout = Instance.new("UIListLayout")
 listLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 listLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-listLayout.Padding = UDim.new(0, -15) 
+listLayout.Padding = UDim.new(0, 0) -- Tight but no overlapping
 listLayout.Parent = container
 
--- LINE 1: USERNAME
+-- LINE 1: USERNAME (Size 35)
 local userLabel = Instance.new("TextLabel")
-userLabel.Size = UDim2.new(1, 0, 0, 80)
+userLabel.Size = UDim2.new(1, 0, 0, 40)
 userLabel.BackgroundTransparency = 1
 userLabel.TextColor3 = Color3.new(1, 1, 1)
-userLabel.TextSize = 75
+userLabel.TextSize = 35
 userLabel.Font = mainFont
 userLabel.Text = cleanUsername
 userLabel.Parent = container
 
--- LINE 2: FPS | UPTIME
+-- LINE 2: FPS | UPTIME (Size 70)
 local mainInfoLabel = Instance.new("TextLabel")
-mainInfoLabel.Size = UDim2.new(1, 0, 0, 160) 
+mainInfoLabel.Size = UDim2.new(1, 0, 0, 80) 
 mainInfoLabel.BackgroundTransparency = 1
 mainInfoLabel.TextColor3 = Color3.new(1, 1, 1)
-mainInfoLabel.TextSize = 150 
+mainInfoLabel.TextSize = 70 -- Proportional 2x
 mainInfoLabel.Font = mainFont
 mainInfoLabel.Text = "0 | 00:00:00"
 mainInfoLabel.Parent = container
 
--- LINE 3: DATE (GMT+7)
+-- LINE 3: DATE (Size 35)
 local dateLabel = Instance.new("TextLabel")
-dateLabel.Size = UDim2.new(1, 0, 0, 80)
+dateLabel.Size = UDim2.new(1, 0, 0, 40)
 dateLabel.BackgroundTransparency = 1
 dateLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
-dateLabel.TextSize = 75
+dateLabel.TextSize = 35
 dateLabel.Font = mainFont
 dateLabel.Text = lastExecutedStr
 dateLabel.Parent = container
 
 -- AFK TOGGLE BUTTON
 local toggleBtn = Instance.new("TextButton")
-toggleBtn.Size = UDim2.new(0, 320, 0, 160)
+toggleBtn.Size = UDim2.new(0, 160, 0, 80)
 toggleBtn.AnchorPoint = Vector2.new(1, 0)
-toggleBtn.Position = UDim2.new(1, -60, 0, 60)
+toggleBtn.Position = UDim2.new(1, -30, 0, 30)
 toggleBtn.BackgroundColor3 = uiDark
 toggleBtn.TextColor3 = Color3.new(1, 1, 1)
-toggleBtn.TextSize = 70
+toggleBtn.TextSize = 35
 toggleBtn.Font = mainFont
 toggleBtn.Text = "AFK"
 toggleBtn.BorderSizePixel = 0
@@ -140,7 +139,7 @@ task.spawn(function()
 end)
 
 -- ==========================================
--- 3. DICTIONARY MAPPING (CLEANUP)
+-- 3. WORLD CLEANUP
 -- ==========================================
 local ClassActions = {
     ["Sound"] = function(o) o.Playing = false; o.Volume = 0 end,
@@ -176,7 +175,6 @@ local ClassActions = {
 
 local function optimizeObject(obj)
     if obj:FindFirstAncestor("CodexAFK") or obj.Name == "CodexAFK" then return end
-
     pcall_func(function()
         local action = ClassActions[obj.ClassName]
         if action then
@@ -191,9 +189,6 @@ local function optimizeObject(obj)
     end)
 end
 
--- ==========================================
--- 4. WORLD CLEANUP
--- ==========================================
 pcall_func(function()
     Lighting.ClockTime = 0
     Lighting.Brightness = 0
@@ -204,7 +199,6 @@ pcall_func(function()
     Terrain.WaterWaveSize = 0
     Terrain.WaterWaveSpeed = 0
     Terrain.WaterColor = flatColor
-
     local blankSky = Instance.new("Sky")
     blankSky.Name = "VoidSky"
     blankSky.CelestialBodiesShown = false
@@ -250,4 +244,4 @@ task.spawn(function()
     end
 end)
 
-print("GMT+7 Hardcoded Dashboard Active.")
+print("DPI Optimized Script Running.")
