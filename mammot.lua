@@ -7,7 +7,7 @@ getgenv().sailorPieceConfig = {
     MULTI_FARM = { "ArenaFighter", "Ninja", "Swordsman", "AcademyTeacher", "Slime", "Curse", "StrongSorcerer", "Hollow" },  -- Instant tp kill npc
 
     DO_REPEATABLE_QUEST = "QuestNPC19",
-    AUTO_FARM = { "Jinwoo Boss", "Alucard Boss", "Yuji Boss", "Gojo Boss", "Sukuna Boss", "Anos Boss", "Aizen Boss", "Strongest of Today Boss", "Strongest in History Boss", "Rimuru Boss", "Saber Boss", "QinShi Boss", "Ichigo Boss" },  
+    AUTO_FARM = { "Jinwoo Boss", "Alucard Boss", "Yuji Boss", "Gojo Boss", "Sukuna Boss", "Anos Boss", "Aizen Boss", "Strongest of Today Boss", "Strongest in History Boss", "Rimuru Boss", "Saber Boss", "QinShi Boss", "Ichigo Boss", "Ice Queen Boss", "IceQueen Boss" },  
     SUMMON_BOSS = { "Ichigo", "Qin Shi", "Saber" },
 
     EQUIP_WEAPON = { "Strongest in History", "Ichigo", "Gryphon", "Dark Blade", "Katana" },
