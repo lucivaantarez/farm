@@ -1,21 +1,25 @@
 -- ==========================================
--- 0. PERFORMANCE
+-- 0. PERFORMANCE & FPS CAP
 -- ==========================================
 pcall(function() setfpscap(10) end)
 
 if not game:IsLoaded() then game.Loaded:Wait() end
-task.wait(3) -- Longer wait to let inventory load
+task.wait(3) 
 
 local Players = game:GetService("Players")
 local CoreGui = game:GetService("CoreGui")
 local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+local Lighting = game:GetService("Lighting")
 local LocalPlayer = Players.LocalPlayer
 
 local mainFont = Enum.Font.SourceSansBold 
 local uiDark = Color3.fromRGB(30, 30, 30)
+local SmoothPlastic = Enum.Material.SmoothPlastic
+local flatColor = Color3.fromRGB(150, 150, 150)
 
 -- ==========================================
--- 1. THE TOP-LAYER ENFORCER
+-- 1. THE RONIX BULLY & PROMPT KILLER
 -- ==========================================
 local afkGui = Instance.new("ScreenGui")
 afkGui.Name = "FinalCompactAFK"
@@ -23,28 +27,48 @@ afkGui.IgnoreGuiInset = true
 afkGui.DisplayOrder = 2147483647 
 afkGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
 
--- Force to CoreGui (or PlayerGui fallback)
 local function setParent()
-    pcall(function()
-        afkGui.Parent = CoreGui:FindFirstChild("RobloxGui") or CoreGui
-    end)
+    pcall(function() afkGui.Parent = CoreGui:FindFirstChild("RobloxGui") or CoreGui end)
 end
 setParent()
 
+-- Safe Roblox menus we DO NOT want to hide
+local coreWhitelist = {"RobloxGui", "RobloxNetworkPauseNotification", "ThemeProvider", "TeleportGui"}
+
+task.spawn(function()
+    while task.wait(1) do
+        setParent()
+        pcall(function()
+            -- 1. Kill the Headset/Error Prompts completely
+            local promptGui = CoreGui:FindFirstChild("RobloxPromptGui")
+            if promptGui then promptGui.Enabled = false end
+
+            -- 2. Hide Ronix/Delta UIs but protect Roblox's core engine
+            for _, gui in pairs(CoreGui:GetChildren()) do
+                if gui:IsA("ScreenGui") and gui ~= afkGui and not table.find(coreWhitelist, gui.Name) then
+                    -- If the black screen is on, hide executor UIs
+                    gui.Enabled = not afkGui:FindFirstChild("BlackScreen").Visible
+                end
+            end
+        end)
+    end
+end)
+
 -- ==========================================
--- 2. DASHBOARD DESIGN (Split-Screen Bottom)
+-- 2. CLICK-PROOF DASHBOARD
 -- ==========================================
 local blackScreen = Instance.new("Frame")
+blackScreen.Name = "BlackScreen"
 blackScreen.Size = UDim2.new(1, 0, 1, 0)
 blackScreen.BackgroundColor3 = Color3.new(0, 0, 0)
-blackScreen.Active = true
+blackScreen.Active = true -- BLOCKS CLICKS FROM PASSING THROUGH
 blackScreen.Parent = afkGui
 
--- Make the black screen clickable to turn off
 local closeBtn = Instance.new("TextButton")
 closeBtn.Size = UDim2.new(1, 0, 1, 0)
 closeBtn.BackgroundTransparency = 1
 closeBtn.Text = ""
+closeBtn.Active = true -- ABSORBS YOUR TAP
 closeBtn.Parent = blackScreen
 
 local container = Instance.new("Frame")
@@ -103,6 +127,7 @@ toggleBtn.TextColor3 = Color3.new(1, 1, 1)
 toggleBtn.TextSize = 20
 toggleBtn.Font = mainFont
 toggleBtn.Text = "AFK"
+toggleBtn.Active = true
 toggleBtn.Visible = false
 toggleBtn.Parent = afkGui
 
@@ -117,19 +142,15 @@ toggleBtn.MouseButton1Click:Connect(function()
 end)
 
 -- ==========================================
--- 3. UPDATED TRACKING LOGIC (No-Freeze)
+-- 3. GMT+7 TIME & NO-FREEZE INVENTORY TRACKER
 -- ==========================================
 local startOsTime = os.time()
 local frameCounter = 0
 
--- Connect FPS counter separately
-RunService.Heartbeat:Connect(function()
-    frameCounter = frameCounter + 1
-end)
+RunService.Heartbeat:Connect(function() frameCounter = frameCounter + 1 end)
 
 local function getQuantity(name, base)
     if string.find(string.lower(name), "untradable") then return 0 end
-    -- Pattern: Matches base name + space + any number
     local num = string.match(name, base .. " (%d+)")
     if num then return tonumber(num) end
     if string.find(name, base) then return 1 end
@@ -137,7 +158,6 @@ local function getQuantity(name, base)
 end
 
 local function updateEverything()
-    -- 1. Update Timer & FPS
     local diff = os.time() - startOsTime
     local h = math.floor(diff / 3600)
     local m = math.floor((diff % 3600) / 60)
@@ -145,7 +165,6 @@ local function updateEverything()
     mainInfoLabel.Text = string.format("%d | %02d:%02d:%02d", frameCounter, h, m, s)
     frameCounter = 0
     
-    -- 2. Scan Items
     local c = {A=0, C=0, M=0, R=0}
     local backpack = LocalPlayer:FindFirstChild("Backpack")
     local char = LocalPlayer.Character
@@ -168,28 +187,30 @@ local function updateEverything()
     statLabel2.Text = string.format("M:%d | R:%d", c.M, c.R)
 end
 
--- Use a task.spawn loop that NEVER pauses
 task.spawn(function()
     while true do
-        if blackScreen.Visible then
-            pcall(updateEverything)
-        end
+        if blackScreen.Visible then pcall(updateEverything) end
         task.wait(1)
     end
 end)
 
--- Ronix UI Bully
-task.spawn(function()
-    while task.wait(1) do
-        setParent()
-        pcall(function()
-            for _, gui in pairs(CoreGui:GetChildren()) do
-                if gui:IsA("ScreenGui") and gui ~= afkGui then
-                    gui.Enabled = not blackScreen.Visible
-                end
-            end
-        end)
-    end
-end)
+-- ==========================================
+-- 4. CLEANUP
+-- ==========================================
+local function optimize(obj)
+    if obj:FindFirstAncestor(afkGui.Name) then return end
+    pcall(function()
+        if obj:IsA("BasePart") then
+            obj.Material = SmoothPlastic; obj.Color = flatColor; obj.CastShadow = false
+        elseif obj:IsA("Decal") or obj:IsA("Texture") or obj:IsA("Sky") then
+            obj:Destroy()
+        elseif obj:IsA("ParticleEmitter") or obj:IsA("Trail") then
+            obj.Enabled = false
+        end
+    end)
+end
+for _, v in pairs(Workspace:GetDescendants()) do optimize(v) end
+Workspace.DescendantAdded:Connect(optimize)
+pcall(function() Lighting.FogEnd = 60 end)
 
-print("Split-Screen Dashboard Fixed & Active.")
+print("Click-Proof Split-Screen Dashboard Active.")
