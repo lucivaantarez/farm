@@ -91,6 +91,7 @@ getgenv().AutoTradeConfig = {
         "Frost Brand", 
         "Glacier Remnant", 
         "Battle Shard",
+        "Frozen Brand",
     },
 }
 loadstring(game:HttpGet("https://api.luarmor.net/files/v4/loaders/75c7fe88bf77410a404199a69629aae3.lua"))()
