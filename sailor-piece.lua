@@ -1,7 +1,7 @@
 script_key="aDgJnOlAuVtVVAGGAjzULYXrBcFtQyHB";
 getgenv().SailorVIP = {
     Optimization = {
-        Enable = false,
+        Enable = true,
         FPSCap = 10,
     },
 
