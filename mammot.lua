@@ -17,15 +17,15 @@ getgenv().sailorPieceConfig = {
     USE_ITEM = { "Common Chest", "Rare Chest", "Epic Chest", "Legendary Chest", "Aura Crate (Untradeable)", "Cosmetic Crate (Untradeable)", "Secret Chest (Untradeable)" },
     BUY_MERCHANT = { "Clan Reroll" },
 
-    REROLL_RACE_UNTIL = { "Kitsune" },
-    REROLL_CLAN_UNTIL = { "Monarch", "Eminence" },
-    REROLL_TRAIT_UNTIL = { "Overlord", "Cataclysm", "Singularity", "Celestial", "Emperor" },
-    REROLL_STAT_UNTIL = { ["Damage"] = "S", ["Defense"] = "S", ["CooldownReduction"] = "S", ["CritChance"] = "S", ["CritDamage"] = "S", ["DamageReduction"] = "S", ["Luck"] = "SSS" },
-    REROLL_PASSIVE_UNTIL = { ["Gryphon"] = { "Fortune Chosen", "Executioner", "Damage V" }, ["Ichigo"] = { "Fortune Chosen", "Executioner", "Damage V" } },
-    REROLL_POWER_UNTIL = { "Cursebrand", "Colossus", "Eternal", "Abyssal", "Apex" },
+    REROLL_RACE_UNTIL = { "Luckborn" },
+    REROLL_CLAN_UNTIL = { "Eminence" },
+    REROLL_TRAIT_UNTIL = { "Emperor" },
+    REROLL_STAT_UNTIL = { ["Damage"] = "S", ["Defense"] = "S", ["CooldownReduction"] = "S", ["CritChance"] = "S", ["CritDamage"] = "S", ["DamageReduction"] = "S", ["Luck"] = "Z" },
+    REROLL_PASSIVE_UNTIL = { ["Gryphon"] = { "Fortune Chosen", "Executioner", "Damage V" }, ["Strongest in History"] = { "Fortune Chosen" }, ["Ichigo"] = { "Fortune Chosen", "Executioner", "Damage V" } },
+    REROLL_POWER_UNTIL = { "Colossus" },
 
     DELETE_ARTIFACT_RARITY = { "Common", "Rare" },
-    EQUIP_ARTIFACT_SET = "Celestial Rupture",
+    EQUIP_ARTIFACT_SET = "Abyssal Crown",
 
     -- Autotrade
     TRADE_USERNAME = { "TestAccLana637289" },
@@ -35,10 +35,10 @@ getgenv().sailorPieceConfig = {
     WEBHOOK_ITEM_NAME = { "Aura Crate", "Cosmetic Crate" },
     WEBHOOK_URL = "https://discord.com/api/webhooks/1489367505226170430/3W21u4vaWuzWM4Mi7vf9e_jKm_XiTWh9x3GVGAFjqkIKQhErWNd4Ex_ohmoBfE0W1M7w",
     DISCORD_ID = "",
-    WEBHOOK_NOTE = "",
-    SHOW_PUBLIC_DISCORD_ID = false,
+    WEBHOOK_NOTE = "M",
+    SHOW_PUBLIC_DISCORD_ID = true,
     SHOW_WEBHOOK_USERNAME = true,
-    SHOW_WEBHOOK_JOBID = false,
+    SHOW_WEBHOOK_JOBID = true,
 }   
 
 loadstring(game:HttpGet("https://api.luarmor.net/files/v4/loaders/1c7ac2a2f86ecf894218a424a1be7667.lua"))()
