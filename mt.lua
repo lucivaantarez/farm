@@ -2,7 +2,7 @@ script_key="YrMGlHVZJYWpvtBaeKtZJOAtEBmcQbkQ";
 setfpscap(10)
 
 getgenv().sailorPieceConfig = {  
-    OPTIMIZATION = true,
+    OPTIMIZATION = false,
     AUTO_KICK = false,
     TRADE_USERNAME = { "trdacc654321" },
     TRADE_ITEM = {
