@@ -1,12 +1,12 @@
-script_key="";
+script_key="aDgJnOlAuVtVVAGGAjzULYXrBcFtQyHB";
 setfpscap(10)
 
 getgenv().sailorPieceConfig = {  
-    OPTIMIZATION = true,  -- true = optimize + show ui, false = disable ui
-    AUTO_KICK = false,  -- Autokick if no TRADE_ITEM items left
-    TRADE_USERNAME = {},  -- "Username"
+    OPTIMIZATION = true,
+    AUTO_KICK = false,
+    TRADE_USERNAME = { "trdacc654321" },
     TRADE_ITEM = {
-            "Abyss Edge",
+        "Abyss Edge",
         "Abyss Sigil",
         "Alter Essence",
         "Ancient Shard",
