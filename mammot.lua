@@ -5,17 +5,18 @@ getgenv().sailorPieceConfig = {
     AUTO_UPDATE_RESTART = true,
     
     MULTI_FARM = { "ArenaFighter", "Ninja", "Swordsman", "AcademyTeacher", "Slime", "Curse", "StrongSorcerer", "Hollow" },  -- Instant tp kill npc
-
+    
     DO_REPEATABLE_QUEST = "QuestNPC19",
     AUTO_FARM = { "Jinwoo Boss", "Alucard Boss", "Yuji Boss", "Gojo Boss", "Sukuna Boss", "Anos Boss", "Aizen Boss", "Strongest of Today Boss", "Strongest in History Boss", "Rimuru Boss", "Saber Boss", "QinShi Boss", "Ichigo Boss", "Ice Queen Boss", "IceQueen Boss" },  
     SUMMON_BOSS = { "Ichigo", "Qin Shi", "Saber" },
 
-    EQUIP_WEAPON = { "Strongest in History", "Ichigo", "Gryphon", "Dark Blade", "Katana" },
-    BLESS_WEAPON = { ["Strongest in History"] = 10, ["Ichigo"] = 10, ["Gryphon"] = 6, ["Dark Blade"] = 3 },
+    EQUIP_WEAPON = {"Ice Queen", "Strongest Shinobi", "Moon Slayer", "Saber Alter", "Gilgamesh", "Strongest In History", "Ichigo", "Gryphon", "Dark Blade", "Katana"},
+    BUY_WEAPON = {"Katana", "Dark Blade", "Gryphon", "Ichigo", "Strongest In History", "Gilgamesh", "Saber Alter", "Moon Slayer", "Strongest Shinobi", "Ice Queen"},
+    BLESS_WEAPON = { ["Ice Queen"] = 10, ["Strongest Shinobi"] = 10, ["Moon Slayer"] = 10, ["Saber Alter"] = 10, ["Gilgamesh"] = 10, ["Strongest In History"] = 10, ["Ichigo"] = 10, ["Gryphon"] = 6, ["Dark Blade"] = 3 },
 
     STAT_POINT_PERCENTAGE = { ["Sword"] = 90, ["Defense"] = 10, ["Melee"] = 0, ["Power"] = 0 },
     USE_ITEM = { "Common Chest", "Rare Chest", "Epic Chest", "Legendary Chest", "Aura Crate (Untradeable)", "Cosmetic Crate (Untradeable)", "Secret Chest (Untradeable)" },
-    BUY_MERCHANT = { "Clan Reroll" },
+    BUY_MERCHANT = { "Race Reroll", "Trait Reroll", "Clan Reroll", "Passive Shard", "Boss Key", "Dungeon Key", "Rush Key", "Boss Ticket", "Haki Color Reroll", "Common Chest", "Rare Chest", "Epic Chest", "Legendary Chest", "Mythical Chest", "Secret Chest" },
 
     REROLL_RACE_UNTIL = { "Luckborn" },
     REROLL_CLAN_UNTIL = { "Eminence" },
