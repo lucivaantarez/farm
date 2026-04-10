@@ -58,7 +58,7 @@ getgenv().sailorPieceConfig = {
     EQUIP_ARTIFACT_SET = "Abyssal Crown",
 
     -- Autotrade
-    TRADE_USERNAME = { "trdacc654321" },
+    TRADE_USERNAME = { "aduhhhbrisik" },
     TRADE_ITEM = {
         "Abyss Edge",
         "Abyss Sigil",
