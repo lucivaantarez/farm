@@ -8,7 +8,7 @@ getgenv().sailorPieceConfig = {
     DO_REPEATABLE_QUEST = "QuestNPC19",
     AUTO_FARM = { "Jinwoo Boss", "Alucard Boss", "Yuji Boss", "Gojo Boss", "Sukuna Boss", "Anos Boss", "Aizen Boss", "Strongest of Today Boss", "Strongest in History Boss", "Rimuru Boss", "Saber Boss", "QinShi Boss", "Ichigo Boss", "Ice Queen Boss" },  
     
-    SUMMON_BOSS = { "Ichigo", "Qin Shi", "Saber", "Moon Slayer", "Ice Queen Normal", "Blessed Maiden Normal" },
+    SUMMON_BOSS = { "Ichigo", "Qin Shi", "Saber", "Moon Slayer Normal", "Ice Queen Normal", "Blessed Maiden Normal" },
     EQUIP_WEAPON = {"Ice Queen", "Strongest Shinobi", "Moon Slayer", "Saber Alter", "Gilgamesh", "Strongest In History", "Ichigo", "Gryphon", "Dark Blade", "Katana"},
     BUY_WEAPON = {"Katana", "Dark Blade", "Gryphon", "Ichigo", "Strongest In History", "Gilgamesh", "Saber Alter", "Moon Slayer", "Strongest Shinobi", "Ice Queen"},
     BLESS_WEAPON = { 
