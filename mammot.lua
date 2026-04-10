@@ -131,6 +131,7 @@ getgenv().sailorPieceConfig = {
         "Rush Key",
         "Secret Chest",
         "Shadow Crystal",
+        "Shadow Essence",
         "Shadow Heart",
         "Shadow Remnant",
         "Soul Flame",
