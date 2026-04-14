@@ -78,8 +78,6 @@ getgenv().sailorPieceConfig = {
         "Corrupt Crown",
         "Cosmetic Crate",
         "Chrysalis Sigil",
-        "Cursed Flesh",
-        "Cursed Talisman",
         "Dark Grail",
         "Dark Ring",
         "Dismantle Ring",
