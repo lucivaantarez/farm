@@ -4,7 +4,7 @@ setfpscap(10)
 getgenv().sailorPieceConfig = {  
     AUTO_UPDATE_RESTART = true,
     
-    MULTI_FARM = { "ArenaFighter", "Ninja", "Swordsman", "AcademyTeacher", "Slime", "Curse", "StrongSorcerer" },  -- Instant tp kill npc
+    MULTI_FARM = { "ArenaFighter", "Ninja", "Swordsman", "AcademyTeacher", "Slime", "Curse", "Quincy", "StrongSorcerer" },  -- Instant tp kill npc
     DO_REPEATABLE_QUEST = "QuestNPC19",
     AUTO_FARM = { "Jinwoo Boss", "Alucard Boss", "Yuji Boss", "Gojo Boss", "Sukuna Boss", "Anos Boss", "Aizen Boss", "Strongest of Today Boss", "Strongest in History Boss", "Rimuru Boss", "Saber Boss", "QinShi Boss", "Ichigo Boss", "Ice Queen Boss" },  
     
