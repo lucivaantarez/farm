@@ -77,6 +77,7 @@ getgenv().sailorPieceConfig = {
         "Clan Reroll",
         "Corrupt Crown",
         "Cosmetic Crate",
+        "Chrysalis Sigil",
         "Cursed Flesh",
         "Cursed Talisman",
         "Dark Grail",
