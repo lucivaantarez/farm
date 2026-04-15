@@ -81,6 +81,7 @@ getgenv().sailorPieceConfig = {
         "Chrysalis Sigil",
         "Dark Grail",
         "Dark Ring",
+        "Diamond",
         "Dismantle Ring",
         "Divine Grail",
         "Dungeon Key",
