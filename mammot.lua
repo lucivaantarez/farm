@@ -3,6 +3,7 @@ setfpscap(10)
 
 getgenv().sailorPieceConfig = {  
     AUTO_UPDATE_RESTART = true,
+    ASCEND_UNTIL_LEVEL = 10,
     
     MULTI_FARM = { "ArenaFighter", "Ninja", "Swordsman", "AcademyTeacher", "Slime", "Curse", "StrongSorcerer" },  -- Instant tp kill npc
     DO_REPEATABLE_QUEST = "QuestNPC19",
@@ -129,7 +130,7 @@ getgenv().sailorPieceConfig = {
         "Wood",
 },
     -- Discord
-    WEBHOOK_ITEM_NAME = { "Aura Crate", "Cosmetic Crate" },
+    WEBHOOK_ITEM_NAME = { "Aura Crate" },
     WEBHOOK_URL = "https://discord.com/api/webhooks/1489367505226170430/3W21u4vaWuzWM4Mi7vf9e_jKm_XiTWh9x3GVGAFjqkIKQhErWNd4Ex_ohmoBfE0W1M7w",
     DISCORD_ID = "",
     WEBHOOK_NOTE = "",
