@@ -4,10 +4,10 @@
 # UNIVERSAL ROBLOX HOPPER | @lanavienrose
 # ================================================
 
-import os, sys, time, json, subprocess, threading, queue, urllib.request, urllib.error, traceback
+import os, sys, time, json, subprocess, threading, queue, urllib.request, traceback
 from datetime import datetime, timedelta, timezone
 
-VERSION = "4.4"
+VERSION = "4.6"
 
 # ── TIMEZONE (WIB / UTC+7) ────────────────────────
 WIB = timezone(timedelta(hours=7))
@@ -25,7 +25,6 @@ G   = "\033[92m"
 Y   = "\033[93m"
 RD  = "\033[91m"
 C   = "\033[96m"
-M   = "\033[95m"
 GR  = "\033[90m"
 DIM = "\033[2m"
 
@@ -52,7 +51,7 @@ def _find_ps_file():
 
 PS_FILE = _find_ps_file()
 
-# ── LOGGING ───────────────────────────────────────
+# ── LOGGING & WEBHOOKS ────────────────────────────
 def log_file(msg):
     try:
         with open(LOG_FILE, "a") as f:
@@ -66,7 +65,24 @@ def log_error(context, e):
             f.write(f"[{wib_now().strftime('%Y-%m-%d %H:%M:%S')}] [ERROR] {context}: {e}\n{tb}\n")
     except: pass
 
-# ── CONFIGURATION ─────────────────────────────────
+def send_webhook(cfg, title, desc, color_hex=5131855):
+    url = cfg.get("webhook_url", "").strip()
+    if not url: return
+    embed = {
+        "title": title,
+        "description": desc,
+        "color": color_hex,
+        "footer": {"text": f"THE FOOL • {wib_now().strftime('%H:%M:%S')}"}
+    }
+    def _send():
+        try:
+            req = urllib.request.Request(url, data=json.dumps({"embeds": [embed]}).encode(),
+                                         headers={"Content-Type": "application/json", "User-Agent": "Mozilla/5.0"}, method="POST")
+            urllib.request.urlopen(req, timeout=5)
+        except: pass
+    threading.Thread(target=_send, daemon=True).start()
+
+# ── CONFIGURATION & SERVER RESOLUTION ─────────────
 DEFAULT_CONFIG = {
     "launch_delay": 5,
     "hop_delay": 2700,
@@ -74,6 +90,7 @@ DEFAULT_CONFIG = {
     "launch_detector": 15,
     "cooldown_hop": 600,
     "fail_limit": 5,
+    "term_width": 0,
     "webhook_url": "",
     "roblox_package": "com.roblox.client",
     "servers": []
@@ -96,6 +113,21 @@ def save_config(cfg):
             json.dump(cfg, f, indent=2)
     except: pass
 
+def resolve_servers(cfg):
+    path = _find_ps_file()
+    file_servers = []
+    try:
+        if os.path.exists(path):
+            with open(path, "r") as f:
+                for line in f:
+                    if "http" in line:
+                        url = line.split("|")[0].strip()
+                        file_servers.append(url)
+    except Exception as e: log_error("resolve_servers", e)
+        
+    if file_servers: return file_servers
+    return cfg.get("servers", [])
+
 # ── ADB ENGINE ────────────────────────────────────
 def adb(cmd):
     try:
@@ -109,20 +141,20 @@ def kill_roblox(cfg):
 
 def launch_roblox(link, cfg):
     pkg = cfg.get("roblox_package", "com.roblox.client")
-    # Universal code parsing to bypass Chrome intent
     if "privateServerLinkCode=" in link:
         code = link.split("privateServerLinkCode=")[-1].split("&")[0]
     else:
         code = link.split("/")[-1]
     
     deeplink = f"roblox://navigation/share_links?code={code}&type=Server"
-    
     adb(f"monkey -p {pkg} -c android.intent.category.LAUNCHER 1")
     time.sleep(3)
     adb(f'am start --user 0 -a android.intent.action.VIEW -d "{deeplink}" {pkg}')
 
 # ── UI ENGINE ─────────────────────────────────────
-def get_term_width():
+def get_term_width(cfg=None):
+    if cfg and cfg.get("term_width", 0) > 0:
+        return cfg["term_width"]
     try: return os.get_terminal_size().columns
     except: return 80
 
@@ -134,7 +166,7 @@ def fmt_time(seconds):
     return f"{m:02d}:{s:02d}"
 
 def banner(cfg=None, ts=None):
-    w = get_term_width()
+    w = get_term_width(cfg)
     line = "━" * w
     print(f"{DIM}{line}{R}")
     print(f"{W}")
@@ -145,16 +177,14 @@ def banner(cfg=None, ts=None):
     print(r"      ██    ██  ██ ██████   ██     ██████ ██████ ██████ ")
     print(f"")
     header = f"   UNIVERSAL ROBLOX HOPPER | @lanavienrose"
-    if ts:
-        print(f"{GR}{header} | last refresh: {ts}{R}")
-    else:
-        print(f"{GR}{header}{R}")
+    if ts: print(f"{GR}{header} | last refresh: {ts}{R}")
+    else: print(f"{GR}{header}{R}")
     print(f"{DIM}{line}{R}")
 
-def print_status(s_num, total, hop_rem, fails, f_limit, cycle, s_label, refresh_mode):
+def print_status(cfg, s_num, total, hop_rem, fails, f_limit, cycle, s_label, refresh_mode):
     ts = wib_now().strftime("%H:%M:%S")
     os.system("clear")
-    banner(None, ts)
+    banner(cfg, ts)
     
     h_str = fmt_time(hop_rem)
     f_clr = RD if fails > 0 else G
@@ -172,10 +202,10 @@ def print_status(s_num, total, hop_rem, fails, f_limit, cycle, s_label, refresh_
     print(f"                                ┃")
     print(f"   command > ", end="", flush=True)
 
-def print_cooldown(cycle, rem, resume_time, refresh_mode):
+def print_cooldown(cfg, cycle, rem, resume_time, refresh_mode):
     ts = wib_now().strftime("%H:%M:%S")
     os.system("clear")
-    banner(None, ts)
+    banner(cfg, ts)
     
     cmds = ["[1] SKIP COOLDOWN", "[2] STOP"]
     if refresh_mode == 3: cmds.insert(0, "[0] STATUS")
@@ -188,24 +218,52 @@ def print_cooldown(cycle, rem, resume_time, refresh_mode):
     print(f"                                ┃")
     print(f"   command > ", end="", flush=True)
 
+# ── SUB-MENUS ─────────────────────────────────────
+def server_manager_menu(cfg):
+    while True:
+        os.system("clear")
+        banner(cfg, wib_now().strftime("%H:%M:%S"))
+        servers = resolve_servers(cfg)
+        print(f"\n   [ ENDPOINT MANAGER ]")
+        print(f"   Loaded: {len(servers)} links")
+        print(f"   Source: {PS_FILE if os.path.exists(PS_FILE) else 'Internal Config'}\n")
+        print(f"   [1] ADD SINGLE LINK")
+        print(f"   [0] BACK\n")
+        
+        c = input("   command > ").strip()
+        if c == "0": break
+        if c == "1":
+            link = input("   Paste Server Link: ").strip()
+            if link.startswith("http"):
+                path = _find_ps_file()
+                os.makedirs(os.path.dirname(path), exist_ok=True)
+                with open(path, "a") as f: f.write(f"{link}\n")
+                print("   [+] Saved to file."); time.sleep(1)
+
+def view_log():
+    os.system("clear")
+    if os.path.exists(LOG_FILE):
+        with open(LOG_FILE, "r") as f:
+            print(f.read())
+    input("\n   Press enter to back...")
+
 def settings_menu(cfg):
     while True:
         ts = wib_now().strftime("%H:%M:%S")
         os.system("clear")
-        banner(None, ts)
+        banner(cfg, ts)
         
-        col_l = 25
-        # Pre-formatting values for alignment
+        actual_servers = resolve_servers(cfg)
+        
         v1 = f"{cfg['launch_delay']}s"
         v2 = fmt_time(cfg['hop_delay'])
         v3 = f"{cfg['heartbeat_delay']}s"
         v4 = f"{cfg['launch_detector']}s"
         v5 = fmt_time(cfg['cooldown_hop'])
         v6 = str(cfg['fail_limit'])
-        
         v7 = "active" if cfg['webhook_url'] else "not set"
-        v8 = f"{len(cfg['servers'])} links"
-        v9 = "auto"
+        v8 = f"{len(actual_servers)} links"
+        v9 = "auto" if cfg.get('term_width', 0) == 0 else str(cfg['term_width'])
         vP = cfg['roblox_package']
 
         print(f"   [ PARAMETERS ]                      ┃   [ MENUS & ACTIONS ]")
@@ -230,9 +288,31 @@ def settings_menu(cfg):
             v = input("   Launch Gap (s): "); cfg['launch_delay'] = int(v) if v.isdigit() else cfg['launch_delay']
         elif c == "2":
             v = input("   Time per Server (min): "); cfg['hop_delay'] = int(v)*60 if v.isdigit() else cfg['hop_delay']
+        elif c == "3":
+            v = input("   Server Join Wait (s): "); cfg['heartbeat_delay'] = int(v) if v.isdigit() else cfg['heartbeat_delay']
+        elif c == "4":
+            v = input("   Lobby Load Wait (s): "); cfg['launch_detector'] = int(v) if v.isdigit() else cfg['launch_detector']
         elif c == "5":
             v = input("   Cooldown (min): "); cfg['cooldown_hop'] = int(v)*60 if v.isdigit() else cfg['cooldown_hop']
-        elif c == "l": view_log()
+        elif c == "6":
+            v = input("   Error Retry Limit: "); cfg['fail_limit'] = int(v) if v.isdigit() else cfg['fail_limit']
+        elif c == "7":
+            cfg['webhook_url'] = input("   Webhook URL (leave blank to disable): ").strip()
+        elif c == "8":
+            server_manager_menu(cfg)
+        elif c == "9":
+            v = input("   Terminal Width (e.g. 80, 0 for auto): "); cfg['term_width'] = int(v) if v.isdigit() else cfg.get('term_width', 0)
+        elif c == "p":
+            cfg['roblox_package'] = input("   Roblox Package: ").strip() or cfg['roblox_package']
+        elif c == "q":
+            print("\n   [~] Testing App Launch...")
+            launch_roblox("test", cfg); time.sleep(5); kill_roblox(cfg); print("   [+] Done."); time.sleep(1)
+        elif c == "t":
+            print("\n   [~] Sending Test Webhook...")
+            send_webhook(cfg, "Test Webhook", "THE FOOL Architecture is Online.", 5685178); time.sleep(1)
+        elif c == "l":
+            view_log()
+        
         save_config(cfg)
 
 # ── LOGIC LOOPS ───────────────────────────────────
@@ -244,28 +324,12 @@ def input_worker():
             if line: input_queue.put(line)
         except: break
 
-def view_log():
-    os.system("clear")
-    if os.path.exists(LOG_FILE):
-        with open(LOG_FILE, "r") as f:
-            print(f.read())
-    input("\n   Press enter to back...")
-
 def hop_loop(cfg, refresh_mode):
-    # Setup worker thread for background inputs
     threading.Thread(target=input_worker, daemon=True).start()
-    
-    servers = cfg['servers']
-    if not servers:
-        # Check for file
-        path = _find_ps_file()
-        if os.path.exists(path):
-            with open(path, "r") as f:
-                for line in f:
-                    if "http" in line: servers.append(line.strip())
+    servers = resolve_servers(cfg)
     
     if not servers:
-        print("   No servers found."); time.sleep(2); return
+        print("\n   [!] No servers found."); time.sleep(2); return
 
     cycle = 1
     stop_ref = [False]
@@ -273,47 +337,42 @@ def hop_loop(cfg, refresh_mode):
     while not stop_ref[0]:
         for idx, link in enumerate(servers):
             if stop_ref[0]: break
-            
             s_num = idx + 1
             fails = 0
             s_label = f"Server {s_num}"
             
             while fails < cfg['fail_limit'] and not stop_ref[0]:
                 try:
-                    # Dashboard while launching
-                    print_status(s_num, len(servers), cfg['hop_delay'], fails, cfg['fail_limit'], cycle, s_label, refresh_mode)
+                    print_status(cfg, s_num, len(servers), cfg['hop_delay'], fails, cfg['fail_limit'], cycle, s_label, refresh_mode)
                     
-                    # Hard Kill -> Wait -> Launch
                     kill_roblox(cfg)
                     time.sleep(cfg['launch_delay'])
                     launch_roblox(link, cfg)
-                    
-                    # Lobby Wait
                     time.sleep(cfg['launch_detector'])
                     
-                    # Joining wait with input check
                     for _ in range(cfg['heartbeat_delay']):
                         time.sleep(1)
                         if not input_queue.empty():
                             ui = input_queue.get()
-                            if ui == "1": break # Skip
+                            if ui == "1": break 
                             if ui == "3": stop_ref[0] = True; break
                         if stop_ref[0]: break
                     
                     if stop_ref[0]: break
 
-                    # Active Timer
+                    # Notify Discord on successful join
+                    send_webhook(cfg, "Endpoint Uplink Established", f"Connected to {s_label} ({s_num}/{len(servers)})", 3720406)
+
                     hop_end = time.time() + cfg['hop_delay']
                     while time.time() < hop_end and not stop_ref[0]:
                         rem = hop_end - time.time()
-                        print_status(s_num, len(servers), rem, fails, cfg['fail_limit'], cycle, s_label, refresh_mode)
+                        print_status(cfg, s_num, len(servers), rem, fails, cfg['fail_limit'], cycle, s_label, refresh_mode)
                         
-                        # Process Inputs
                         time.sleep(1)
                         if not input_queue.empty():
                             ui = input_queue.get()
-                            if ui == "1": break # Skip
-                            if ui == "2": hop_end += 300 # +5min
+                            if ui == "1": break 
+                            if ui == "2": hop_end += 300 
                             if ui == "3": stop_ref[0] = True; break
                     
                     kill_roblox(cfg)
@@ -324,16 +383,15 @@ def hop_loop(cfg, refresh_mode):
 
         if stop_ref[0]: break
 
-        # Cooldown Phase
         cd_end = time.time() + cfg['cooldown_hop']
         resume = wib_from_ts(cd_end).strftime("%H:%M:%S")
         while time.time() < cd_end and not stop_ref[0]:
             rem = cd_end - time.time()
-            print_cooldown(cycle, rem, resume, refresh_mode)
+            print_cooldown(cfg, cycle, rem, resume, refresh_mode)
             time.sleep(1)
             if not input_queue.empty():
                 ui = input_queue.get()
-                if ui == "1": break # Skip CD
+                if ui == "1": break 
                 if ui == "2": stop_ref[0] = True; break
         
         cycle += 1
@@ -344,8 +402,9 @@ def main():
         os.system("clear")
         banner(cfg, wib_now().strftime("%H:%M:%S"))
         print(f"\n   1. Start Hop\n   2. Settings\n   3. Exit\n")
-        c = input("   command > ").strip()
-        
+        try: c = input("   command > ").strip()
+        except EOFError: break
+            
         if c == "1":
             print(f"\n   Refresh Mode:\n   1. 30s\n   2. 60s\n   3. Manual\n")
             rm = input("   mode > ").strip()
