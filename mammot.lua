@@ -4,140 +4,93 @@ setfpscap(10)
 getgenv().sailorPieceConfig = {  
     AUTO_UPDATE_RESTART = true,
     ASCEND_UNTIL_LEVEL = 10,
+    AUTO_CELESTIAL_FAVOR_TITLE = true, -- Auto attack 5000 island bosses
     
-    MULTI_FARM = { "ArenaFighter", "Ninja", "Swordsman", "AcademyTeacher", "Slime", "Curse", "StrongSorcerer" },  -- Instant tp kill npc
+    -- Autofarm
     DO_REPEATABLE_QUEST = "QuestNPC19",
-    AUTO_FARM = { "Jinwoo Boss", "Alucard Boss", "Yuji Boss", "Gojo Boss", "Sukuna Boss", "Anos Boss", "Aizen Boss", "Strongest of Today Boss", "Strongest in History Boss", "Rimuru Boss", "Saber Boss", "QinShi Boss", "Ichigo Boss", "Ice Queen Boss" },  
+    -- MULTI_FARM -> Instant tp kill npc (Must have Strongest In History/Ichigo/Gryphon)
+    MULTI_FARM = { "ArenaFighter", "Ninja", "Swordsman", "AcademyTeacher", "Slime", "StrongSorcerer", "Curse", "Hollow", "Sorcerer", "FrostRogue", "DesertMonkey", "Monkey", "Thief" },  
+    AUTO_FARM = {},  -- Auto farm ascend/quest/weapon bosses 
+    SUMMON_BOSS = {},  -- Auto summon ascend/quest/weapon bosses
     
-    SUMMON_BOSS = { "Ichigo", "Qin Shi", "Saber", "Moon Slayer Normal", "Ice Queen Normal", "Blessed Maiden Normal" },
-    EQUIP_WEAPON = {"Ice Queen", "Strongest Shinobi", "Moon Slayer", "Saber Alter", "Gilgamesh", "Strongest In History", "Ichigo", "Gryphon", "Dark Blade", "Katana"},
-    BUY_WEAPON = {"Katana", "Dark Blade", "Gryphon", "Ichigo", "Strongest In History", "Gilgamesh", "Saber Alter", "Moon Slayer", "Strongest Shinobi", "Ice Queen"},
-    BLESS_WEAPON = { 
-        ["Ice Queen"] = 10,
-        ["Strongest Shinobi"] = 10,
-        ["Moon Slayer"] = 10,
-        ["Saber Alter"] = 10,
-        ["Gilgamesh"] = 10,
-        ["Strongest In History"] = 10,
-        ["Ichigo"] = 10,
-        ["Gryphon"] = 6,
-        ["Dark Blade"] = 3 
-    },
-    STAT_POINT_PERCENTAGE = { 
-        ["Sword"] = 90, 
-        ["Defense"] = 10,
-        ["Melee"] = 0, 
-        ["Power"] = 0 
-    },
-    BUILD_MODE = "Luck",
-    USE_ITEM = { "Common Chest", "Rare Chest", "Epic Chest", "Legendary Chest", "Aura Crate (Untradeable)", "Cosmetic Crate (Untradeable)", "Secret Chest (Untradeable)" },
-    BUY_MERCHANT = { "Race Reroll", "Trait Reroll", "Clan Reroll", "Passive Shard", "Boss Key", "Dungeon Key", "Rush Key", "Boss Ticket", "Haki Color Reroll", "Common Chest", "Rare Chest", "Epic Chest", "Legendary Chest", "Mythical Chest", "Secret Chest" },
+    -- Weapons
+    EQUIP_WEAPON = {"Strongest In History", "Ichigo", "Gryphon", "Dark Blade", "Katana"},
+    BUY_WEAPON = {"Katana", "Dark Blade", "Gryphon", "Ichigo", "Strongest In History", "Ice Queen"},
+    BLESS_WEAPON = { ["Ice Queen"] = 10, ["Strongest In History"] = 10, ["Ichigo"] = 6, ["Gryphon"] = 6, ["Dark Blade"] = 3 },
 
+    -- Reroll
     REROLL_RACE_UNTIL = { "Luckborn" },
     REROLL_CLAN_UNTIL = { "Eminence" },
     REROLL_TRAIT_UNTIL = { "Emperor" },
     REROLL_STAT_UNTIL = { 
         ["Damage"] = "Z", 
-        ["Defense"] = "S", 
-        ["CooldownReduction"] = "S", 
-        ["CritChance"] = "S", 
-        ["CritDamage"] = "S", 
-        ["DamageReduction"] = "S", 
+        ["Defense"] = "SS", 
+        ["CooldownReduction"] = "Z", 
+        ["CritChance"] = "SSS", 
+        ["CritDamage"] = "SSS", 
+        ["DamageReduction"] = "SS", 
         ["Luck"] = "Z" 
     },
     REROLL_PASSIVE_UNTIL = { 
-      ["Ichigo"] = { "Fortune Chosen", "Executioner", "Rampage", "Damage V" }, 
-      ["Strongest In History"] = { "Fortune Chosen", "Executioner", "Rampage", "Damage V" },
-      ["Gilgamesh"] = { "Fortune Chosen", "Executioner", "Rampage", "Damage V" },
-      ["Saber Alter"] = { "Fortune Chosen", "Executioner", "Rampage", "Damage V" },
-      ["Moon Slayer"] = { "Fortune Chosen", "Executioner", "Rampage", "Damage V" },
-      ["Strongest Shinobi"] = { "Fortune Chosen", "Executioner", "Rampage", "Damage V" },
-      ["Ice Queen"] = { "Fortune Chosen", "Executioner", "Rampage", "Damage V" },
+        ["Ice Queen"] = { "Fortune Chosen", "Executioner", "Rampage" }, 
+        ["Strongest In History"] = { "Fortune Chosen" }, 
+        ["Ichigo"] = { "Fortune Chosen", "Executioner", "Rampage", "Damage V", "Damage IV" } 
     },
     REROLL_POWER_UNTIL = { "Colossus" },
+
+    -- Artifact
     DELETE_ARTIFACT_RARITY = { "Common" },
     EQUIP_ARTIFACT_SET = "Abyssal Crown",
+
+    -- Misc
+    BUILD_MODE = "Luck",  -- Damage/Luck
+    USE_ITEM = { "Common Chest", "Rare Chest", "Epic Chest", "Legendary Chest", "Aura Crate (Untradeable)", "Cosmetic Crate (Untradeable)", "Secret Chest (Untradeable)" },
+    BUY_MERCHANT = { "Race Reroll", "Trait Reroll", "Clan Reroll", "Passive Shard", "Boss Key", "Dungeon Key", "Rush Key", "Boss Ticket", "Haki Color Reroll", "Common Chest", "Rare Chest", "Epic Chest", "Legendary Chest", "Mythical Chest", "Secret Chest" },
 
     -- Autotrade
     TRADE_USERNAME = { "aduhhhbrisik" },
     TRADE_ITEM = {
-        "Abyss Sigil",
         "Adamantite",
         "Ancient Shard",
-        "Atomic Core",
-        "Atomic Omen",
         "Aura Crate",
-        "Azure Heart",
-        "Battle Shard",
-        "Battle Sigil",
         "Boss Key",
         "Boss Rush Ticket",
         "Boss Ticket",
-        "Blood Ring",
         "Broken Sword",
         "Clan Reroll",
-        "Corrupt Crown",
         "Cosmetic Crate",
-        "Chrysalis Sigil",
-        "Dark Grail",
-        "Dark Ring",
         "Diamond",
-        "Dismantle Ring",
-        "Divine Grail",
         "Dungeon Key",
         "Dungeon Ticket",
-        "Eminence Essence",
-        "Evolution Fragment",
         "Frost Brand",
         "Frost Relic",
         "Frozen Brand",
         "Frozen Will",
-        "Fusion Ring",
         "Glacier Remnant",
-        "Golden Essence",
-        "Hōgyoku Fragment",
-        "Hogyoku Fragment",
         "Ice Core",
-        "Infinity Essence",
-        "Kamish Dagger",
-        "Limitless Ring",
         "Magic Shard",
-        "Monarch Core",
-        "Monarch Essence",
         "Mythical Chest",
         "Mythril",
         "Obsidian",
-        "Path Fragment",
         "Passive Shard",
-        "Phantasm Core",
         "Power Shard",
         "Race Reroll",
-        "Reiatsu Core",
         "Rush Key",
-        "Sage Pulse",
         "Secret Chest",
-        "Shadow Crystal",
-        "Shadow Essence",
-        "Shadow Remnant",
-        "Soul Flame",
-        "Slime Core",
-        "Tempest Relic",
-        "Throne Remnant",
         "Tower Key",
         "Trait Reroll",
-        "Umbral Capsule",
         "Upper Seal",
-        "Void Fragment",
         "Wood",
-},
+    },
+    
     -- Discord
-    WEBHOOK_ITEM_NAME = { "Aura Crate" },
+    WEBHOOK_ITEM_NAME = { "Aura Crate", "Evolution Fragment" },
     WEBHOOK_URL = "https://discord.com/api/webhooks/1489367505226170430/3W21u4vaWuzWM4Mi7vf9e_jKm_XiTWh9x3GVGAFjqkIKQhErWNd4Ex_ohmoBfE0W1M7w",
     DISCORD_ID = "",
     WEBHOOK_NOTE = "",
-    SHOW_PUBLIC_DISCORD_ID = true,
+    SHOW_PUBLIC_DISCORD_ID = false,
     SHOW_WEBHOOK_USERNAME = true,
     SHOW_WEBHOOK_JOBID = false,
-}   
+}
 
 loadstring(game:HttpGet("https://api.luarmor.net/files/v4/loaders/1c7ac2a2f86ecf894218a424a1be7667.lua"))()
