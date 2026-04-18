@@ -40,7 +40,4 @@ fi
 echo -e "${G}[+] BOOTING THE FOOL...${R}"
 echo -e "${GR}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${R}"
 
-# Reconnect standard input to the terminal to prevent EOFError during piped execution
-exec < /dev/tty
-
 python hopper.py
