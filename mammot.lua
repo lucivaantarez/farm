@@ -50,6 +50,7 @@ getgenv().sailorPieceConfig = {
     -- Autotrade
     TRADE_USERNAME = { "aduhhhbrisik" },
     TRADE_ITEM = {
+        "Abyss Sigil",
         "Adamantite",
         "Ancient Shard",
         "Aura Crate",
@@ -62,12 +63,6 @@ getgenv().sailorPieceConfig = {
         "Diamond",
         "Dungeon Key",
         "Dungeon Ticket",
-        "Frost Brand",
-        "Frost Relic",
-        "Frozen Brand",
-        "Frozen Will",
-        "Glacier Remnant",
-        "Ice Core",
         "Magic Shard",
         "Mythical Chest",
         "Mythril",
