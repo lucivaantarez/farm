@@ -9,7 +9,7 @@ getgenv().sailorPieceConfig = {
     -- Autofarm
     DO_REPEATABLE_QUEST = "QuestNPC19",
     -- MULTI_FARM -> Instant tp kill npc (Must have Strongest In History/Ichigo/Gryphon)
-    MULTI_FARM = { "ArenaFighter", "Ninja", "Swordsman", "AcademyTeacher", "Slime", "StrongSorcerer", "Curse", "Hollow", "Sorcerer", "FrostRogue", "DesertMonkey", "Monkey", "Thief" },  
+    MULTI_FARM = { "Bunny", "ArenaFighter", "Ninja", "Swordsman", "AcademyTeacher", "Slime", "StrongSorcerer", "Curse", "Hollow", "Sorcerer", "FrostRogue", "DesertMonkey", "Monkey", "Thief" },  
     AUTO_FARM = {},  -- Auto farm ascend/quest/weapon bosses 
     SUMMON_BOSS = {},  -- Auto summon ascend/quest/weapon bosses
     
@@ -36,7 +36,7 @@ getgenv().sailorPieceConfig = {
         ["Strongest In History"] = { "Fortune Chosen" }, 
         ["Ichigo"] = { "Fortune Chosen", "Executioner", "Rampage", "Damage V", "Damage IV" } 
     },
-    REROLL_POWER_UNTIL = { "Colossus" },
+    REROLL_POWER_UNTIL = { "Subjugator" },
 
     -- Artifact
     DELETE_ARTIFACT_RARITY = { "Common" },
