@@ -7,7 +7,7 @@
 import os, sys, time, json, subprocess, threading, queue, urllib.request, traceback
 from datetime import datetime, timedelta, timezone
 
-VERSION = "5.1"
+VERSION = "5.3"
 
 # ── TIMEZONE (WIB / UTC+7) ────────────────────────
 WIB = timezone(timedelta(hours=7))
@@ -33,7 +33,8 @@ HOME        = os.path.expanduser("~")
 BASE        = os.path.join(HOME, "saturnity")
 CONFIG_FILE = os.path.join(BASE, "hopper_config.json")
 LOG_FILE    = os.path.join(BASE, "hopper.log")
-GITHUB_URL  = "https://raw.githubusercontent.com/lucivaantarez/farm/main/servers.txt"
+GITHUB_BASE = "https://raw.githubusercontent.com/lucivaantarez/farm/main/"
+GITHUB_API  = "https://api.github.com/repos/lucivaantarez/farm/contents/"
 
 try:
     os.makedirs(BASE, exist_ok=True)
@@ -95,6 +96,7 @@ DEFAULT_CONFIG = {
     "webhook_url": "",
     "roblox_package": "com.roblox.client",
     "server_source": "local",
+    "github_target": "servers.txt",
     "servers": []
 }
 
@@ -119,14 +121,16 @@ def resolve_servers(cfg):
     source = cfg.get("server_source", "local")
     
     if source == "github":
+        target_file = cfg.get("github_target", "servers.txt")
+        url = GITHUB_BASE + target_file
         try:
-            req = urllib.request.Request(GITHUB_URL, headers={"User-Agent": "Mozilla/5.0"})
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
             with urllib.request.urlopen(req, timeout=10) as resp:
                 lines = resp.read().decode('utf-8').splitlines()
             links = [line.split("|")[0].strip() for line in lines if "http" in line]
             if links: return links
         except Exception as e:
-            log_error("github_fetch", e)
+            log_error(f"github_fetch ({target_file})", e)
             return [] 
             
     if source == "local":
@@ -157,20 +161,17 @@ def kill_roblox(cfg):
 def launch_roblox(link, cfg):
     pkg = cfg.get("roblox_package", "com.roblox.client")
     
-    # Universal URL Parser Engine
     if "privateServerLinkCode=" in link:
         try:
             place_id = link.split("/games/")[1].split("/")[0]
             code = link.split("privateServerLinkCode=")[-1].split("&")[0]
             deeplink = f"roblox://placeId={place_id}&linkCode={code}"
-        except:
-            deeplink = link 
+        except: deeplink = link 
     elif "share?code=" in link:
         try:
             code = link.split("share?code=")[-1].split("&")[0]
             deeplink = f"roblox://navigation/share_links?code={code}&type=Server"
-        except:
-            deeplink = link
+        except: deeplink = link
     else:
         deeplink = link
         
@@ -186,7 +187,6 @@ def get_term_width(cfg=None):
     else:
         try: w = os.get_terminal_size().columns
         except: pass
-    # Enforce minimum width of 64 so the lines never break the ASCII logo
     return max(64, w)
 
 def fmt_time(seconds):
@@ -257,7 +257,9 @@ def server_manager_menu(cfg):
         servers = resolve_servers(cfg)
         
         src_mode = cfg.get("server_source", "local")
-        if src_mode == "github": display_src = f"GitHub ({GITHUB_URL.split('/')[-1]})"
+        t_file = cfg.get("github_target", "servers.txt")
+        
+        if src_mode == "github": display_src = f"GitHub ({t_file})"
         elif src_mode == "local": display_src = f"Local ({PS_FILE if os.path.exists(PS_FILE) else 'Not Found'})"
         else: display_src = "Internal Config"
 
@@ -265,10 +267,11 @@ def server_manager_menu(cfg):
         print(f"   Loaded: {len(servers)} links")
         print(f"   Source: {display_src}\n")
         
-        print(f"   [1] ADD SINGLE LINK")
+        print(f"   [1] ADD SINGLE LINK (Local)")
         print(f"   [2] SWITCH SOURCE")
         if src_mode == "github":
             print(f"   [3] FORCE RE-FETCH")
+            print(f"   [4] SCAN & SELECT GITHUB FILE")
         print(f"   [0] BACK\n")
         
         try: c = input("   command > ").strip()
@@ -291,9 +294,38 @@ def server_manager_menu(cfg):
             save_config(cfg)
             print("   [+] Source updated."); time.sleep(1)
         if c == "3" and src_mode == "github":
-            print("\n   [~] Re-fetching list from source...")
+            print(f"\n   [~] Re-fetching {t_file}...")
             resolve_servers(cfg)
             print("   [+] Sync complete."); time.sleep(1)
+        if c == "4" and src_mode == "github":
+            print("\n   [~] Scanning GitHub Repository for .txt files...")
+            try:
+                req = urllib.request.Request(GITHUB_API, headers={"User-Agent": "Mozilla/5.0"})
+                with urllib.request.urlopen(req, timeout=10) as resp:
+                    repo_data = json.loads(resp.read().decode('utf-8'))
+                
+                txt_files = [f["name"] for f in repo_data if f["type"] == "file" and f["name"].endswith(".txt")]
+                
+                if not txt_files:
+                    print("   [!] No .txt files found in the main repository.")
+                    time.sleep(2)
+                    continue
+                
+                print("\n   [ AVAILABLE GITHUB SHARDS ]")
+                for i, fname in enumerate(txt_files):
+                    print(f"   [{i+1}] {fname}")
+                print("   [0] CANCEL\n")
+                
+                sel = input("   select > ").strip()
+                if sel.isdigit() and 1 <= int(sel) <= len(txt_files):
+                    cfg["github_target"] = txt_files[int(sel)-1]
+                    save_config(cfg)
+                    print(f"   [+] Target locked to {cfg['github_target']}. Fetching..."); resolve_servers(cfg); time.sleep(1)
+                elif sel != "0":
+                    print("   [!] Invalid selection."); time.sleep(1)
+            except Exception as e:
+                print(f"   [!] API Error: {e}")
+                print("   [!] Ensure the repository is public."); time.sleep(3)
 
 def view_log():
     os.system("clear")
@@ -318,14 +350,18 @@ def settings_menu(cfg):
         v5 = fmt_time(cfg['cooldown_hop'])
         v6 = str(cfg['fail_limit'])
         v7 = "active" if cfg['webhook_url'] else "none"
-        v8 = f"{len(actual_servers)} links"
+        
+        src_mode = cfg.get("server_source", "local")
+        v8_src = cfg.get("github_target", "GH") if src_mode == "github" else "Local"
+        v8 = f"{len(actual_servers)} ({v8_src})"
+        
         v9 = "auto" if cfg.get('term_width', 0) == 0 else str(cfg['term_width'])
         vP = cfg['roblox_package']
 
         print(f"   [ PARAMETERS ]              ┃ [ SYSTEM CONTROLS ]")
         print(f"                               ┃")
         print(f"   [1] LAUNCH GAP :: {v1:<9}┃ [7] WEBHOOK :: {v7}")
-        print(f"   [2] HOP DELAY  :: {v2:<9}┃ [8] SERVERS :: {v8}")
+        print(f"   [2] HOP DELAY  :: {v2:<9}┃ [8] SERVERS :: {v8[:12]}")
         print(f"   [3] JOIN WAIT  :: {v3:<9}┃ [9] LAYOUT  :: {v9}")
         print(f"   [4] LOBBY WAIT :: {v4:<9}┃ [P] PACKAGE :: {vP[:12]}")
         print(f"   [5] COOLDOWN   :: {v5:<9}┃ [Q] TEST START")
@@ -334,10 +370,8 @@ def settings_menu(cfg):
         print(f"                               ┃")
         print(f"                               ┃ [0] BACK")
         
-        try:
-            c = input(f"   command > ").strip().lower()
-        except KeyboardInterrupt:
-            sys.exit(0)
+        try: c = input(f"   command > ").strip().lower()
+        except KeyboardInterrupt: sys.exit(0)
         except: break
 
         if c == "0": break
@@ -391,7 +425,7 @@ def hop_loop(cfg, refresh_mode):
         
         servers = resolve_servers(cfg)
         if not servers:
-            print("\n   [!] No servers found. Waiting 10s before retry..."); time.sleep(10); continue
+            print(f"\n   [!] No servers found in {cfg.get('github_target', 'source')}. Waiting 10s..."); time.sleep(10); continue
 
         for idx, link in enumerate(servers):
             if stop_ref[0]: break
