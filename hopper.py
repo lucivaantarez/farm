@@ -7,7 +7,7 @@
 import os, sys, time, json, subprocess, threading, queue, urllib.request, traceback
 from datetime import datetime, timedelta, timezone
 
-VERSION = "5.0"
+VERSION = "5.1"
 
 # ── TIMEZONE (WIB / UTC+7) ────────────────────────
 WIB = timezone(timedelta(hours=7))
@@ -180,10 +180,14 @@ def launch_roblox(link, cfg):
 
 # ── UI ENGINE ─────────────────────────────────────
 def get_term_width(cfg=None):
+    w = 80
     if cfg and cfg.get("term_width", 0) > 0:
-        return cfg["term_width"]
-    try: return max(60, os.get_terminal_size().columns)
-    except: return 80
+        w = cfg["term_width"]
+    else:
+        try: w = os.get_terminal_size().columns
+        except: pass
+    # Enforce minimum width of 64 so the lines never break the ASCII logo
+    return max(64, w)
 
 def fmt_time(seconds):
     if seconds is None or seconds < 0: return "--:--"
@@ -193,10 +197,10 @@ def fmt_time(seconds):
     return f"{m:02d}:{s:02d}"
 
 def banner(cfg=None, ts=None):
-    w = get_term_width(cfg) - 1 # Prevent screen wrapping
+    w = get_term_width(cfg) - 1
     line = "━" * w
     print(f"{DIM}{line}{R}")
-    print(f"{G}") # GREEN TITLE
+    print(f"{G}") 
     print(r"   ████████ ██  ██ ██████   ██████ ██████ ██████ ██     ")
     print(r"      ██    ██  ██ ██       ██     ██  ██ ██  ██ ██     ")
     print(r"      ██    ██████ █████    █████  ██  ██ ██  ██ ██     ")
@@ -220,7 +224,6 @@ def print_status(cfg, s_num, total, hop_rem, fails, f_limit, cycle, s_label, ref
     if refresh_mode == 3: cmds.insert(0, "[0] STATUS")
     while len(cmds) < 5: cmds.append("")
 
-    # Condensed spacing for split-screen
     col_w = 16 
     print(f"\n   ENDPOINT :: {W}{str(s_label)[:col_w]:<{col_w}}{R} ┃ {GR}{cmds[0]}{R}")
     print(f"   SEQUENCE :: {W}{f'{s_num}/{total}':<{col_w}}{R} ┃ {GR}{cmds[1]}{R}")
@@ -268,7 +271,9 @@ def server_manager_menu(cfg):
             print(f"   [3] FORCE RE-FETCH")
         print(f"   [0] BACK\n")
         
-        c = input("   command > ").strip()
+        try: c = input("   command > ").strip()
+        except KeyboardInterrupt: sys.exit(0)
+        
         if c == "0": break
         if c == "1":
             link = input("   Paste Server Link: ").strip()
@@ -295,7 +300,8 @@ def view_log():
     if os.path.exists(LOG_FILE):
         with open(LOG_FILE, "r") as f:
             print(f.read())
-    input("\n   Press enter to back...")
+    try: input("\n   Press enter to back...")
+    except KeyboardInterrupt: sys.exit(0)
 
 def settings_menu(cfg):
     while True:
@@ -316,7 +322,6 @@ def settings_menu(cfg):
         v9 = "auto" if cfg.get('term_width', 0) == 0 else str(cfg['term_width'])
         vP = cfg['roblox_package']
 
-        # Condensed for split-screen handling
         print(f"   [ PARAMETERS ]              ┃ [ SYSTEM CONTROLS ]")
         print(f"                               ┃")
         print(f"   [1] LAUNCH GAP :: {v1:<9}┃ [7] WEBHOOK :: {v7}")
@@ -331,6 +336,8 @@ def settings_menu(cfg):
         
         try:
             c = input(f"   command > ").strip().lower()
+        except KeyboardInterrupt:
+            sys.exit(0)
         except: break
 
         if c == "0": break
@@ -427,7 +434,9 @@ def hop_loop(cfg, refresh_mode):
                     
                     kill_roblox(cfg)
                     break
-                except:
+                except KeyboardInterrupt:
+                    print("\n   [!] Terminated by user."); sys.exit(0)
+                except Exception as e:
                     fails += 1
                     log_error("loop", traceback.format_exc())
 
@@ -453,11 +462,13 @@ def main():
         banner(cfg, wib_now().strftime("%H:%M:%S"))
         print(f"\n   1. Start Hop\n   2. Settings\n   3. Exit\n")
         try: c = input("   command > ").strip()
+        except KeyboardInterrupt: sys.exit(0)
         except EOFError: break
             
         if c == "1":
             print(f"\n   Refresh Mode:\n   1. 30s\n   2. 60s\n   3. Manual\n")
-            rm = input("   mode > ").strip()
+            try: rm = input("   mode > ").strip()
+            except KeyboardInterrupt: sys.exit(0)
             hop_loop(cfg, int(rm) if rm.isdigit() else 1)
         elif c == "2":
             settings_menu(cfg)
@@ -465,4 +476,5 @@ def main():
             sys.exit(0)
 
 if __name__ == "__main__":
-    main()
+    try: main()
+    except KeyboardInterrupt: sys.exit(0)
