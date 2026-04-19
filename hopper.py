@@ -7,7 +7,7 @@
 import os, sys, time, json, subprocess, threading, queue, urllib.request, traceback
 from datetime import datetime, timedelta, timezone
 
-VERSION = "4.9"
+VERSION = "5.0"
 
 # ── TIMEZONE (WIB / UTC+7) ────────────────────────
 WIB = timezone(timedelta(hours=7))
@@ -118,7 +118,6 @@ def save_config(cfg):
 def resolve_servers(cfg):
     source = cfg.get("server_source", "local")
     
-    # 1. Fetch from GitHub Repo
     if source == "github":
         try:
             req = urllib.request.Request(GITHUB_URL, headers={"User-Agent": "Mozilla/5.0"})
@@ -130,7 +129,6 @@ def resolve_servers(cfg):
             log_error("github_fetch", e)
             return [] 
             
-    # 2. Fetch from Local SD Card
     if source == "local":
         path = _find_ps_file()
         file_servers = []
@@ -143,7 +141,6 @@ def resolve_servers(cfg):
         except Exception as e: log_error("local_fetch", e)
         if file_servers: return file_servers
 
-    # 3. Fallback to Internal Config
     return cfg.get("servers", [])
 
 # ── ADB ENGINE ────────────────────────────────────
@@ -159,12 +156,24 @@ def kill_roblox(cfg):
 
 def launch_roblox(link, cfg):
     pkg = cfg.get("roblox_package", "com.roblox.client")
-    if "privateServerLinkCode=" in link:
-        code = link.split("privateServerLinkCode=")[-1].split("&")[0]
-    else:
-        code = link.split("/")[-1]
     
-    deeplink = f"roblox://navigation/share_links?code={code}&type=Server"
+    # Universal URL Parser Engine
+    if "privateServerLinkCode=" in link:
+        try:
+            place_id = link.split("/games/")[1].split("/")[0]
+            code = link.split("privateServerLinkCode=")[-1].split("&")[0]
+            deeplink = f"roblox://placeId={place_id}&linkCode={code}"
+        except:
+            deeplink = link 
+    elif "share?code=" in link:
+        try:
+            code = link.split("share?code=")[-1].split("&")[0]
+            deeplink = f"roblox://navigation/share_links?code={code}&type=Server"
+        except:
+            deeplink = link
+    else:
+        deeplink = link
+        
     adb(f"monkey -p {pkg} -c android.intent.category.LAUNCHER 1")
     time.sleep(3)
     adb(f'am start --user 0 -a android.intent.action.VIEW -d "{deeplink}" {pkg}')
@@ -173,7 +182,7 @@ def launch_roblox(link, cfg):
 def get_term_width(cfg=None):
     if cfg and cfg.get("term_width", 0) > 0:
         return cfg["term_width"]
-    try: return os.get_terminal_size().columns
+    try: return max(60, os.get_terminal_size().columns)
     except: return 80
 
 def fmt_time(seconds):
@@ -184,10 +193,10 @@ def fmt_time(seconds):
     return f"{m:02d}:{s:02d}"
 
 def banner(cfg=None, ts=None):
-    w = get_term_width(cfg)
+    w = get_term_width(cfg) - 1 # Prevent screen wrapping
     line = "━" * w
     print(f"{DIM}{line}{R}")
-    print(f"{W}")
+    print(f"{G}") # GREEN TITLE
     print(r"   ████████ ██  ██ ██████   ██████ ██████ ██████ ██     ")
     print(r"      ██    ██  ██ ██       ██     ██  ██ ██  ██ ██     ")
     print(r"      ██    ██████ █████    █████  ██  ██ ██  ██ ██     ")
@@ -195,7 +204,7 @@ def banner(cfg=None, ts=None):
     print(r"      ██    ██  ██ ██████   ██     ██████ ██████ ██████ ")
     print(f"")
     header = f"   UNIVERSAL ROBLOX HOPPER | @lanavienrose"
-    if ts: print(f"{GR}{header} | last refresh: {ts}{R}")
+    if ts: print(f"{GR}{header} | refresh: {ts}{R}")
     else: print(f"{GR}{header}{R}")
     print(f"{DIM}{line}{R}")
 
@@ -211,12 +220,13 @@ def print_status(cfg, s_num, total, hop_rem, fails, f_limit, cycle, s_label, ref
     if refresh_mode == 3: cmds.insert(0, "[0] STATUS")
     while len(cmds) < 5: cmds.append("")
 
-    col_w = 20
-    print(f"\n   ENDPOINT  ::  {W}{str(s_label)[:col_w]:<{col_w}}{R} ┃   {GR}{cmds[0]}{R}")
-    print(f"   SEQUENCE  ::  {W}{f'{s_num} / {total}':<{col_w}}{R} ┃   {GR}{cmds[1]}{R}")
-    print(f"   PHASE     ::  {W}{str(cycle):<{col_w}}{R} ┃   {GR}{cmds[2]}{R}")
-    print(f"   FAULTS    ::  {f_clr}{f'{fails} / {f_limit}':<{col_w}}{R} ┃   {GR}{cmds[3]}{R}")
-    print(f"   UPLINK    ::  {W}{h_str:<{col_w}}{R} ┃   {GR}{cmds[4]}{R}")
+    # Condensed spacing for split-screen
+    col_w = 16 
+    print(f"\n   ENDPOINT :: {W}{str(s_label)[:col_w]:<{col_w}}{R} ┃ {GR}{cmds[0]}{R}")
+    print(f"   SEQUENCE :: {W}{f'{s_num}/{total}':<{col_w}}{R} ┃ {GR}{cmds[1]}{R}")
+    print(f"   PHASE    :: {W}{str(cycle):<{col_w}}{R} ┃ {GR}{cmds[2]}{R}")
+    print(f"   FAULTS   :: {f_clr}{f'{fails}/{f_limit}':<{col_w}}{R} ┃ {GR}{cmds[3]}{R}")
+    print(f"   UPLINK   :: {W}{h_str:<{col_w}}{R} ┃ {GR}{cmds[4]}{R}")
     print(f"                                ┃")
     print(f"   command > ", end="", flush=True)
 
@@ -229,10 +239,10 @@ def print_cooldown(cfg, cycle, rem, resume_time, refresh_mode):
     if refresh_mode == 3: cmds.insert(0, "[0] STATUS")
     while len(cmds) < 3: cmds.append("")
 
-    col_w = 20
-    print(f"\n   STATUS    ::  {W}{f'PHASE {cycle} DONE':<{col_w}}{R} ┃   {GR}{cmds[0]}{R}")
-    print(f"   COOLDOWN  ::  {Y}{fmt_time(rem):<{col_w}}{R} ┃   {GR}{cmds[1]}{R}")
-    print(f"   RESUME    ::  {W}{resume_time:<{col_w}}{R} ┃   {GR}{cmds[2]}{R}")
+    col_w = 16
+    print(f"\n   STATUS   :: {W}{f'PHASE {cycle} DONE':<{col_w}}{R} ┃ {GR}{cmds[0]}{R}")
+    print(f"   COOLDOWN :: {Y}{fmt_time(rem):<{col_w}}{R} ┃ {GR}{cmds[1]}{R}")
+    print(f"   RESUME   :: {W}{resume_time:<{col_w}}{R} ┃ {GR}{cmds[2]}{R}")
     print(f"                                ┃")
     print(f"   command > ", end="", flush=True)
 
@@ -252,13 +262,10 @@ def server_manager_menu(cfg):
         print(f"   Loaded: {len(servers)} links")
         print(f"   Source: {display_src}\n")
         
-        print(f"   [1] ADD SINGLE LINK (Saves to Local)")
-        print(f"   [2] SWITCH SOURCE (Local / GitHub / Config)")
-        
-        # Dynamic Menu Logic: Only show RE-FETCH if GitHub is selected
+        print(f"   [1] ADD SINGLE LINK")
+        print(f"   [2] SWITCH SOURCE")
         if src_mode == "github":
-            print(f"   [3] FORCE RE-FETCH (Sync Now)")
-            
+            print(f"   [3] FORCE RE-FETCH")
         print(f"   [0] BACK\n")
         
         c = input("   command > ").strip()
@@ -271,7 +278,7 @@ def server_manager_menu(cfg):
                 with open(path, "a") as f: f.write(f"{link}\n")
                 print("   [+] Saved to local file."); time.sleep(1)
         if c == "2":
-            print("\n   [1] Local File (private_servers.txt)\n   [2] GitHub Repo (servers.txt)\n   [3] Internal Config")
+            print("\n   [1] Local File\n   [2] GitHub Repo\n   [3] Internal Config")
             s = input("   select > ").strip()
             if s == "1": cfg["server_source"] = "local"
             elif s == "2": cfg["server_source"] = "github"
@@ -304,23 +311,23 @@ def settings_menu(cfg):
         v4 = f"{cfg['launch_detector']}s"
         v5 = fmt_time(cfg['cooldown_hop'])
         v6 = str(cfg['fail_limit'])
-        v7 = "active" if cfg['webhook_url'] else "not set"
-        v8 = f"{len(actual_servers)} links ({cfg.get('server_source', 'local')})"
+        v7 = "active" if cfg['webhook_url'] else "none"
+        v8 = f"{len(actual_servers)} links"
         v9 = "auto" if cfg.get('term_width', 0) == 0 else str(cfg['term_width'])
         vP = cfg['roblox_package']
 
-        print(f"   [ PARAMETERS ]                      ┃   [ MENUS & ACTIONS ]")
-        print(f"                                       ┃")
-        print(f"   [1] KILL->RELAUNCH GAP :: {v1:<10}┃   [7] SET WEBHOOK        :: {v7}")
-        print(f"   [2] TIME PER SERVER    :: {v2:<10}┃   [8] MANAGE SERVERS     :: {v8}")
-        print(f"   [3] SERVER JOIN WAIT   :: {v3:<10}┃   [9] ADJUST LAYOUT      :: {v9}")
-        print(f"   [4] LOBBY LOAD WAIT    :: {v4:<10}┃   [P] SET ROBLOX PACKAGE :: {vP}")
-        print(f"   [5] CYCLE COOLDOWN     :: {v5:<10}┃   [Q] TEST START         ")
-        print(f"   [6] ERROR RETRY LIMIT  :: {v6:<10}┃   [T] TEST WEBHOOK       ")
-        print(f"                                       ┃   [L] VIEW LOG           ")
-        print(f"                                       ┃")
-        print(f"                                       ┃   [0] BACK               ")
-        print(f"                                       ┃")
+        # Condensed for split-screen handling
+        print(f"   [ PARAMETERS ]              ┃ [ SYSTEM CONTROLS ]")
+        print(f"                               ┃")
+        print(f"   [1] LAUNCH GAP :: {v1:<9}┃ [7] WEBHOOK :: {v7}")
+        print(f"   [2] HOP DELAY  :: {v2:<9}┃ [8] SERVERS :: {v8}")
+        print(f"   [3] JOIN WAIT  :: {v3:<9}┃ [9] LAYOUT  :: {v9}")
+        print(f"   [4] LOBBY WAIT :: {v4:<9}┃ [P] PACKAGE :: {vP[:12]}")
+        print(f"   [5] COOLDOWN   :: {v5:<9}┃ [Q] TEST START")
+        print(f"   [6] MAX FAULTS :: {v6:<9}┃ [T] TEST WEBHOOK")
+        print(f"                               ┃ [L] VIEW LOG")
+        print(f"                               ┃")
+        print(f"                               ┃ [0] BACK")
         
         try:
             c = input(f"   command > ").strip().lower()
