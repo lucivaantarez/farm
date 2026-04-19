@@ -7,7 +7,7 @@
 import os, sys, time, json, subprocess, threading, queue, urllib.request, traceback
 from datetime import datetime, timedelta, timezone
 
-VERSION = "5.3"
+VERSION = "5.4"
 
 # ── TIMEZONE (WIB / UTC+7) ────────────────────────
 WIB = timezone(timedelta(hours=7))
@@ -97,6 +97,7 @@ DEFAULT_CONFIG = {
     "roblox_package": "com.roblox.client",
     "server_source": "local",
     "github_target": "servers.txt",
+    "resume_index": 0,
     "servers": []
 }
 
@@ -319,6 +320,7 @@ def server_manager_menu(cfg):
                 sel = input("   select > ").strip()
                 if sel.isdigit() and 1 <= int(sel) <= len(txt_files):
                     cfg["github_target"] = txt_files[int(sel)-1]
+                    cfg["resume_index"] = 0 # Reset resume progress on file change
                     save_config(cfg)
                     print(f"   [+] Target locked to {cfg['github_target']}. Fetching..."); resolve_servers(cfg); time.sleep(1)
                 elif sel != "0":
@@ -415,7 +417,7 @@ def input_worker():
             if line: input_queue.put(line)
         except: break
 
-def hop_loop(cfg, refresh_mode):
+def hop_loop(cfg, refresh_mode, start_idx=0):
     threading.Thread(target=input_worker, daemon=True).start()
     
     cycle = 1
@@ -427,11 +429,17 @@ def hop_loop(cfg, refresh_mode):
         if not servers:
             print(f"\n   [!] No servers found in {cfg.get('github_target', 'source')}. Waiting 10s..."); time.sleep(10); continue
 
-        for idx, link in enumerate(servers):
+        # The loop now honors the injected start index (Resume State)
+        for idx in range(start_idx, len(servers)):
             if stop_ref[0]: break
+            link = servers[idx]
             s_num = idx + 1
             fails = 0
             s_label = f"Server {s_num}"
+            
+            # MEMORY BURN: Save exact sequence location before executing the hop
+            cfg["resume_index"] = idx
+            save_config(cfg)
             
             while fails < cfg['fail_limit'] and not stop_ref[0]:
                 try:
@@ -476,6 +484,11 @@ def hop_loop(cfg, refresh_mode):
 
         if stop_ref[0]: break
 
+        # WIPE MEMORY: Only triggers if the entire phase completes successfully
+        cfg["resume_index"] = 0
+        save_config(cfg)
+        start_idx = 0 # Ensures Phase 2 loops back to Server 1
+
         cd_end = time.time() + cfg['cooldown_hop']
         resume = wib_from_ts(cd_end).strftime("%H:%M:%S")
         while time.time() < cd_end and not stop_ref[0]:
@@ -500,10 +513,27 @@ def main():
         except EOFError: break
             
         if c == "1":
+            # RESUME INTERCEPTOR LOGIC
+            servers = resolve_servers(cfg)
+            res_idx = cfg.get("resume_index", 0)
+            start_idx = 0
+            
+            if res_idx > 0 and res_idx < len(servers):
+                print(f"\n   [~] Saved progress found: Server {res_idx + 1} of {len(servers)}")
+                try: ch = input("   [?] Resume from this point? (Y/n) > ").strip().lower()
+                except KeyboardInterrupt: sys.exit(0)
+                
+                if ch != 'n':
+                    start_idx = res_idx
+                else:
+                    cfg["resume_index"] = 0
+                    save_config(cfg)
+            
             print(f"\n   Refresh Mode:\n   1. 30s\n   2. 60s\n   3. Manual\n")
             try: rm = input("   mode > ").strip()
             except KeyboardInterrupt: sys.exit(0)
-            hop_loop(cfg, int(rm) if rm.isdigit() else 1)
+            hop_loop(cfg, int(rm) if rm.isdigit() else 1, start_idx)
+            
         elif c == "2":
             settings_menu(cfg)
         elif c == "3":
