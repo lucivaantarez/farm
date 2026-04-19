@@ -37,6 +37,7 @@ getgenv().sailorPieceConfig = {
         ["Ichigo"] = { "Fortune Chosen", "Executioner", "Rampage", "Damage V", "Damage IV" } 
     },
     REROLL_POWER_UNTIL = { "Subjugator" },
+    REROLL_BLOODLINE_UNTIL = { "Cosmic" },
 
     -- Artifact
     DELETE_ARTIFACT_RARITY = { "Common" },
