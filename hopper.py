@@ -7,7 +7,7 @@
 import os, sys, time, json, subprocess, threading, queue, urllib.request, traceback
 from datetime import datetime, timedelta, timezone
 
-VERSION = "4.6"
+VERSION = "4.9"
 
 # ── TIMEZONE (WIB / UTC+7) ────────────────────────
 WIB = timezone(timedelta(hours=7))
@@ -33,6 +33,7 @@ HOME        = os.path.expanduser("~")
 BASE        = os.path.join(HOME, "saturnity")
 CONFIG_FILE = os.path.join(BASE, "hopper_config.json")
 LOG_FILE    = os.path.join(BASE, "hopper.log")
+GITHUB_URL  = "https://raw.githubusercontent.com/lucivaantarez/farm/main/servers.txt"
 
 try:
     os.makedirs(BASE, exist_ok=True)
@@ -93,6 +94,7 @@ DEFAULT_CONFIG = {
     "term_width": 0,
     "webhook_url": "",
     "roblox_package": "com.roblox.client",
+    "server_source": "local",
     "servers": []
 }
 
@@ -114,18 +116,34 @@ def save_config(cfg):
     except: pass
 
 def resolve_servers(cfg):
-    path = _find_ps_file()
-    file_servers = []
-    try:
-        if os.path.exists(path):
-            with open(path, "r") as f:
-                for line in f:
-                    if "http" in line:
-                        url = line.split("|")[0].strip()
-                        file_servers.append(url)
-    except Exception as e: log_error("resolve_servers", e)
-        
-    if file_servers: return file_servers
+    source = cfg.get("server_source", "local")
+    
+    # 1. Fetch from GitHub Repo
+    if source == "github":
+        try:
+            req = urllib.request.Request(GITHUB_URL, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                lines = resp.read().decode('utf-8').splitlines()
+            links = [line.split("|")[0].strip() for line in lines if "http" in line]
+            if links: return links
+        except Exception as e:
+            log_error("github_fetch", e)
+            return [] 
+            
+    # 2. Fetch from Local SD Card
+    if source == "local":
+        path = _find_ps_file()
+        file_servers = []
+        try:
+            if os.path.exists(path):
+                with open(path, "r") as f:
+                    for line in f:
+                        if "http" in line:
+                            file_servers.append(line.split("|")[0].strip())
+        except Exception as e: log_error("local_fetch", e)
+        if file_servers: return file_servers
+
+    # 3. Fallback to Internal Config
     return cfg.get("servers", [])
 
 # ── ADB ENGINE ────────────────────────────────────
@@ -224,10 +242,23 @@ def server_manager_menu(cfg):
         os.system("clear")
         banner(cfg, wib_now().strftime("%H:%M:%S"))
         servers = resolve_servers(cfg)
+        
+        src_mode = cfg.get("server_source", "local")
+        if src_mode == "github": display_src = f"GitHub ({GITHUB_URL.split('/')[-1]})"
+        elif src_mode == "local": display_src = f"Local ({PS_FILE if os.path.exists(PS_FILE) else 'Not Found'})"
+        else: display_src = "Internal Config"
+
         print(f"\n   [ ENDPOINT MANAGER ]")
         print(f"   Loaded: {len(servers)} links")
-        print(f"   Source: {PS_FILE if os.path.exists(PS_FILE) else 'Internal Config'}\n")
-        print(f"   [1] ADD SINGLE LINK")
+        print(f"   Source: {display_src}\n")
+        
+        print(f"   [1] ADD SINGLE LINK (Saves to Local)")
+        print(f"   [2] SWITCH SOURCE (Local / GitHub / Config)")
+        
+        # Dynamic Menu Logic: Only show RE-FETCH if GitHub is selected
+        if src_mode == "github":
+            print(f"   [3] FORCE RE-FETCH (Sync Now)")
+            
         print(f"   [0] BACK\n")
         
         c = input("   command > ").strip()
@@ -238,7 +269,19 @@ def server_manager_menu(cfg):
                 path = _find_ps_file()
                 os.makedirs(os.path.dirname(path), exist_ok=True)
                 with open(path, "a") as f: f.write(f"{link}\n")
-                print("   [+] Saved to file."); time.sleep(1)
+                print("   [+] Saved to local file."); time.sleep(1)
+        if c == "2":
+            print("\n   [1] Local File (private_servers.txt)\n   [2] GitHub Repo (servers.txt)\n   [3] Internal Config")
+            s = input("   select > ").strip()
+            if s == "1": cfg["server_source"] = "local"
+            elif s == "2": cfg["server_source"] = "github"
+            elif s == "3": cfg["server_source"] = "config"
+            save_config(cfg)
+            print("   [+] Source updated."); time.sleep(1)
+        if c == "3" and src_mode == "github":
+            print("\n   [~] Re-fetching list from source...")
+            resolve_servers(cfg)
+            print("   [+] Sync complete."); time.sleep(1)
 
 def view_log():
     os.system("clear")
@@ -262,7 +305,7 @@ def settings_menu(cfg):
         v5 = fmt_time(cfg['cooldown_hop'])
         v6 = str(cfg['fail_limit'])
         v7 = "active" if cfg['webhook_url'] else "not set"
-        v8 = f"{len(actual_servers)} links"
+        v8 = f"{len(actual_servers)} links ({cfg.get('server_source', 'local')})"
         v9 = "auto" if cfg.get('term_width', 0) == 0 else str(cfg['term_width'])
         vP = cfg['roblox_package']
 
@@ -326,15 +369,16 @@ def input_worker():
 
 def hop_loop(cfg, refresh_mode):
     threading.Thread(target=input_worker, daemon=True).start()
-    servers = resolve_servers(cfg)
     
-    if not servers:
-        print("\n   [!] No servers found."); time.sleep(2); return
-
     cycle = 1
     stop_ref = [False]
 
     while not stop_ref[0]:
+        
+        servers = resolve_servers(cfg)
+        if not servers:
+            print("\n   [!] No servers found. Waiting 10s before retry..."); time.sleep(10); continue
+
         for idx, link in enumerate(servers):
             if stop_ref[0]: break
             s_num = idx + 1
@@ -360,7 +404,6 @@ def hop_loop(cfg, refresh_mode):
                     
                     if stop_ref[0]: break
 
-                    # Notify Discord on successful join
                     send_webhook(cfg, "Endpoint Uplink Established", f"Connected to {s_label} ({s_num}/{len(servers)})", 3720406)
 
                     hop_end = time.time() + cfg['hop_delay']
