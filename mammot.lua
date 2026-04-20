@@ -11,7 +11,7 @@ getgenv().sailorPieceConfig = {
     DO_REPEATABLE_QUEST = "QuestNPC19",
     -- MULTI_FARM -> Instant tp kill npc (Must have Strongest In History/Ichigo/Gryphon)
     MULTI_FARM = { "Bunny", "ArenaFighter", "Ninja", "Swordsman", "AcademyTeacher", "Slime", "StrongSorcerer", "Curse", "Hollow", "Sorcerer", "FrostRogue", "DesertMonkey", "Monkey", "Thief", "FastNinja", "StrongBandit", "StrongFighter", "Delinquent", "Quincy" },  
-    AUTO_FARM = { "Great Mage Boss", "The World Boss", "Cosmic Being Boss", "True Manipulator Boss", "Strongest Shinobi Boss", "Corrupted Knight Boss" },  -- Auto farm ascend/quest/weapon bosses 
+    AUTO_FARM = { "Great Mage Boss", "True Manipulator Boss", "Strongest Shinobi Boss", "Corrupted Knight Boss" },  -- Auto farm ascend/quest/weapon bosses 
     SUMMON_BOSS = { "True Manipulator Normal" },  -- Auto summon ascend/quest/weapon bosses
     
     -- Weapons
