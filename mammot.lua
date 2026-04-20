@@ -6,18 +6,19 @@ getgenv().sailorPieceConfig = {
     ASCEND_UNTIL_LEVEL = 10,
     WORLD = "Sea 2",
     AUTO_CELESTIAL_FAVOR_TITLE = true, -- Auto attack 5000 island bosses
+    AUTO_BOSS_RUSH_AND_INFINITE_STAT_BONUS = false,
     
     -- Autofarm
-    DO_REPEATABLE_QUEST = "QuestNPC19",
+    DO_REPEATABLE_QUEST = "QuestNPC23",
     -- MULTI_FARM -> Instant tp kill npc (Must have Strongest In History/Ichigo/Gryphon)
-    MULTI_FARM = { "Bunny", "ArenaFighter", "Ninja", "Swordsman", "AcademyTeacher", "Slime", "StrongSorcerer", "Curse", "Hollow", "Sorcerer", "FrostRogue", "DesertMonkey", "Monkey", "Thief", "FastNinja", "StrongBandit", "StrongFighter", "Delinquent", "Quincy" },  
-    AUTO_FARM = { "Great Mage Boss", "Cosmic Being", "The World Boss", "True Manipulator Boss", "Strongest Shinobi Boss", "Corrupted Knight Boss", "Yamato" },  -- Auto farm ascend/quest/weapon bosses 
-    SUMMON_BOSS = { "True Manipulator Normal" },  -- Auto summon ascend/quest/weapon bosses
+    MULTI_FARM = { "Bunny", "Quincy", "FastNinja", "StrongBandit", "StrongFighter", "Delinquent", "Bunny", "ArenaFighter", "Ninja", "Swordsman", "AcademyTeacher", "Slime", "StrongSorcerer", "Curse", "Hollow", "Sorcerer", "FrostRogue", "DesertBandit", "Monkey", "Thief" },  
+    AUTO_FARM = { "Great Mage Boss" },  -- Auto farm ascend/quest/weapon bosses 
+    SUMMON_BOSS = {},  -- Auto summon ascend/quest/weapon bosses
     
     -- Weapons
     EQUIP_WEAPON = {"Ice Queen", "Strongest In History", "Ichigo", "Gryphon", "Dark Blade", "Katana"},
-    BUY_WEAPON = {"Katana", "Dark Blade", "Gryphon", "Ichigo", "Strongest In History", "Ice Queen"},
-    BLESS_WEAPON = { ["Ice Queen"] = 10, ["Strongest In History"] = 10, ["Ichigo"] = 6, ["Gryphon"] = 6, ["Dark Blade"] = 3 },
+    BUY_WEAPON = {"Katana", "Dark Blade", "Gryphon", "Ichigo", "Strongest In History", "Ice Queen", "The World", "Cosmic Being" },
+    BLESS_WEAPON = { ["Cosmic Being"] = 10, ["The World"] = 10, ["Ice Queen"] = 10, ["Strongest In History"] = 10, ["Ichigo"] = 6, ["Gryphon"] = 6, ["Dark Blade"] = 3 },
 
     -- Reroll
     REROLL_RACE_UNTIL = { "Luckborn" },
@@ -33,12 +34,14 @@ getgenv().sailorPieceConfig = {
         ["Luck"] = "Z" 
     },
     REROLL_PASSIVE_UNTIL = { 
+        ["Cosmic Being"] = { "Fortune Chosen", "Executioner", "Rampage" }, 
+        ["The World"] = { "Fortune Chosen", "Executioner", "Rampage" }, 
         ["Ice Queen"] = { "Fortune Chosen", "Executioner", "Rampage" }, 
         ["Strongest In History"] = { "Fortune Chosen" }, 
         ["Ichigo"] = { "Fortune Chosen", "Executioner", "Rampage", "Damage V", "Damage IV" } 
     },
     REROLL_POWER_UNTIL = { "Subjugator" },
-    REROLL_BLOODLINE_UNTIL = { "Cosmic" },
+    REROLL_BLOODLINE_UNTIL = { "Primordial" },
 
     -- Artifact
     DELETE_ARTIFACT_RARITY = { "Common" },
@@ -56,35 +59,61 @@ getgenv().sailorPieceConfig = {
         "Adamantite",
         "Ancient Fragment",
         "Ancient Shard",
+        "Atomic Core",
         "Aura Crate",
+        "Azure Heart",
+        "Blood Ring",
         "Bloodline Stone",
         "Boss Key",
         "Boss Rush Ticket",
         "Boss Ticket",
         "Broken Sword",
         "Clan Reroll",
+        "Corrupt Crown",
         "Cosmetic Crate",
+        "Cosmic Essence",
+        "Cursed Flesh",
+        "Dark Ring",
         "Diamond",
+        "Dismantle Fang",
+        "Dominion Brand",
         "Dungeon Key",
         "Dungeon Ticket",
         "Easter Egg",
         "Easter Key",
+        "Evolution Fragment",
+        "Hōgyoku Fragment",
+        "Galaxy Shard",
+        "Infinity Essence",
+        "Limitless Ring",
         "Magic Essence",
         "Magic Shard",
         "Mana Core",
+        "Monster Pulse",
         "Mythical Chest",
         "Mythril",
         "Obsidian",
         "Passive Shard",
+        "Path Fragment",
+        "Phantasm Core",
+        "Power Fragment",
         "Power Shard",
         "Race Reroll",
+        "Reiatsu Core",
         "Rush Key",
         "Secret Chest",
+        "Soul Flame",
+        "Slime Core",
         "Spell Echo",
+        "Star Mark",
+        "Time Remnant",
         "Tower Key",
         "Trait Reroll",
         "Upper Seal",
+        "Vampire Omen",
+        "Void Fragment",
         "Wood",
+        "World Core",
     },
     
     -- Discord
