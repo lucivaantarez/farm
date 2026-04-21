@@ -16,7 +16,6 @@ getgenv().sailorPieceConfig = {
     SUMMON_BOSS = {},  -- Auto summon ascend/quest/weapon bosses
     
     -- Weapons
-    EQUIP_WEAPON = {"Ice Queen", "Strongest In History", "Ichigo", "Gryphon", "Dark Blade", "Katana"},
     BUY_WEAPON = {"Katana", "Dark Blade", "Gryphon", "Ichigo", "Strongest In History", "Ice Queen", "The World", "Cosmic Being" },
     BLESS_WEAPON = { ["Cosmic Being"] = 10, ["The World"] = 10, ["Ice Queen"] = 10, ["Strongest In History"] = 10, ["Ichigo"] = 6, ["Gryphon"] = 6, ["Dark Blade"] = 3 },
 
