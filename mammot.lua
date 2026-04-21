@@ -53,7 +53,7 @@ getgenv().sailorPieceConfig = {
     BUY_MERCHANT = { "Race Reroll", "Trait Reroll", "Clan Reroll", "Passive Shard", "Boss Key", "Dungeon Key", "Rush Key", "Boss Ticket", "Haki Color Reroll", "Common Chest", "Rare Chest", "Epic Chest", "Legendary Chest", "Mythical Chest", "Secret Chest" },
 
     -- Autotrade
-    TRADE_USERNAME = { "aduhhhbrisik" },
+    TRADE_USERNAME = { "aduhhhbrisik", "lanapilagilagi" },
     TRADE_ITEM = {
         "Abyss Sigil",
         "Adamantite",
