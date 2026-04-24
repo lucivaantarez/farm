@@ -1,16 +1,16 @@
 -- // lanavienrose architecture: control interface
 -- // profile: luxury_minimalist / gui_enabled
--- // build: v1.0.1-stable.ui_patch
+-- // build: v1.1.0-stable.raw_transit_logic
 
 if not game:IsLoaded() then game.Loaded:Wait() end
 
 local Players             = game:GetService("Players")
-local TweenService        = game:GetService("TweenService")
 local CoreGui             = game:GetService("CoreGui")
 local ReplicatedStorage   = game:GetService("ReplicatedStorage")
 local VirtualUser         = game:GetService("VirtualUser")
 local VirtualInputManager = game:GetService("VirtualInputManager")
 local UIS                 = game:GetService("UserInputService")
+local RunService          = game:GetService("RunService")
 
 local LocalPlayer = Players.LocalPlayer
 
@@ -18,16 +18,8 @@ local LocalPlayer = Players.LocalPlayer
 local SEA_1_ID         = 77747658251236
 local SEA_2_ID         = 130167267952199
 local DOOR_POS         = Vector3.new(-275.591, 324.905, -3060.462)
-local DOOR_APPROACH    = Vector3.new(-278.053, 322.956, -3053.164)
 local CRYSTAL_POS      = Vector3.new(-438.665, -3.789,  374.054)
-local CRYSTAL_APPROACH = Vector3.new(-437.640, -3.789,  369.882)
 local STARTER_POS      = Vector3.new(-64.282,  -3.463, -294.211)
-
-local TWEEN_SPEED     = 250
-local CHUNK_BUFFER    = 3.5
-local PROMPT_RANGE    = 45
-local PROMPT_RETRIES  = 15
-local PROMPT_INTERVAL = 0.5
 
 local BOUNTY_CAP_MIN  = 48000000
 local BOUNTY_CAP_MAX  = 50000000
@@ -36,7 +28,6 @@ local BOUNTY_CAP_MAX  = 50000000
 local teleportRemote = ReplicatedStorage:FindFirstChild("TeleportToPortal",     true)
 local checkRemote    = ReplicatedStorage:FindFirstChild("CheckPortalUnlock",    true)
 local settingsRemote = ReplicatedStorage:FindFirstChild("SettingsToggle",       true)
-local spawnRemote    = ReplicatedStorage:FindFirstChild("TeleportToIslandSpot", true)
 
 -- // state
 local autoSkillActive = false
@@ -60,7 +51,6 @@ ScreenGui.ResetOnSpawn = false
 
 local Main                    = Instance.new("Frame", ScreenGui)
 Main.Size                     = UDim2.new(0, 220, 0, 290)
--- centered positioning
 Main.Position                 = UDim2.new(0.5, -110, 0.5, -145) 
 Main.BackgroundColor3         = Color3.fromRGB(10, 10, 12)
 Main.BackgroundTransparency   = 0.3
@@ -100,7 +90,6 @@ ResizeBtn.BackgroundTransparency = 1
 ResizeBtn.Text                   = ""
 ResizeBtn.BorderSizePixel        = 0
 
--- // fixed touch scaling logic
 ResizeBtn.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
         if resizing then return end
@@ -153,7 +142,6 @@ local function makeLabel(text, yPos, size, color)
     return lbl
 end
 
--- // category label factory
 local function makeCategory(text, yPos)
     local lbl                  = Instance.new("TextLabel", Main)
     lbl.Size                   = UDim2.new(1, -20, 0, 12)
@@ -173,7 +161,6 @@ local function makeCategory(text, yPos)
     line.BorderSizePixel        = 0
 end
 
--- // full-width button
 local function makeBtn(text, yPos, color)
     local btn                   = Instance.new("TextButton", Main)
     btn.Size                    = UDim2.new(1, -20, 0, 28)
@@ -191,7 +178,6 @@ local function makeBtn(text, yPos, color)
     return btn
 end
 
--- // half-width button
 local function makeHalfBtn(text, yPos, side, color)
     local btn                   = Instance.new("TextButton", Main)
     btn.Size                    = UDim2.new(0.5, -14, 0, 28)
@@ -259,35 +245,6 @@ local function getHRP()
     return char and char:FindFirstChild("HumanoidRootPart")
 end
 
-local function distanceTo(hrp, target)
-    return (hrp.Position - target).Magnitude
-end
-
-local function tweenTo(hrp, target)
-    local dist     = distanceTo(hrp, target)
-    local duration = math.max(dist / TWEEN_SPEED, 0.1)
-    TweenService:Create(hrp,
-        TweenInfo.new(duration, Enum.EasingStyle.Linear, Enum.EasingDirection.Out),
-        { Position = target }
-    ):Play()
-    task.wait(duration)
-end
-
-local function fireNearbyPrompt(hrp, promptName)
-    for _ = 1, PROMPT_RETRIES do
-        for _, obj in ipairs(workspace:GetDescendants()) do
-            if obj:IsA("ProximityPrompt") and (not promptName or obj.Name == promptName) then
-                if (obj.Parent.Position - hrp.Position).Magnitude <= PROMPT_RANGE then
-                    fireproximityprompt(obj)
-                    return true
-                end
-            end
-        end
-        task.wait(PROMPT_INTERVAL)
-    end
-    return false
-end
-
 local function isHakiActive()
     local char = LocalPlayer.Character
     if not char then return false end
@@ -315,68 +272,54 @@ local function stopSkill()
     end
 end
 
--- // transit logic
-local function transitToWorld()
-    log("TRANSITING TO SEA 1...")
-    pcall(function()
-        checkRemote:InvokeServer("SoulDominion")
-        task.wait(0.1)
-        checkRemote:InvokeServer("World")
-        task.wait(0.2)
-        teleportRemote:FireServer("World")
-    end)
-    local hrp = getHRP()
-    if not hrp then return end
-    while distanceTo(hrp, DOOR_POS) > 400 do task.wait(1) end
-    log("ARRIVED — BUFFERING")
-    task.wait(CHUNK_BUFFER)
-    hrp = getHRP()
-    if not hrp then return end
-    hrp.Anchored = true
-    tweenTo(hrp, DOOR_APPROACH)
-    task.wait(2)
-    fireNearbyPrompt(hrp, "Sea2DoorPrompt")
-    hrp.Anchored = false
-    log("DOOR FIRED")
-end
-
-local function transitToSafeZone()
-    log("TRANSITING TO SAFE ZONE...")
-    pcall(function()
-        checkRemote:InvokeServer("SoulDominion")
-        task.wait(0.1)
-        checkRemote:InvokeServer("Starter")
-        task.wait(0.2)
-        teleportRemote:FireServer("Starter")
-    end)
-    log("SAFE ZONE REACHED")
-end
-
-local function transitToJungle()
-    log("TRANSITING TO JUNGLE...")
-    pcall(function()
-        checkRemote:InvokeServer("SoulDominion")
-        task.wait(0.1)
-        checkRemote:InvokeServer("Jungle")
-        task.wait(0.2)
-        teleportRemote:FireServer("Jungle")
-    end)
-    local hrp = getHRP()
-    if not hrp then return end
-    while distanceTo(hrp, CRYSTAL_POS) > 150 do task.wait(1) end
-    log("ARRIVED — BUFFERING")
-    task.wait(CHUNK_BUFFER)
-    hrp = getHRP()
-    if not hrp then return end
-    hrp.Anchored = true
-    tweenTo(hrp, CRYSTAL_APPROACH)
-    if spawnRemote then
-        spawnRemote:FireServer("Jungle")
-    else
-        fireNearbyPrompt(hrp, "CheckpointPrompt")
+-- // TRANSIT LOGIC (RAW CFRAME IMPORTED FROM PROVIDED SCRIPT)
+local function executeTransit(mapArg, targetPos, promptName)
+    if not teleportRemote or not checkRemote then
+        log("ERROR: MISSING REMOTES")
+        return
     end
+
+    log("SYNCING SERVER DATA...")
+    pcall(function() 
+        checkRemote:InvokeServer("SoulDominion")
+        checkRemote:InvokeServer(mapArg) 
+    end)
+    task.wait(0.2)
+
+    log("REQUESTING TELEPORT...")
+    teleportRemote:FireServer(mapArg)
+    
+    -- Wait for map load
+    task.wait(3.5)
+
+    local hrp = getHRP()
+    if not hrp then return end
+    
     hrp.Anchored = false
-    log("SPAWN LOCKED")
+
+    -- Move to specific interactable coordinate
+    log("MOVING TO OBJECT...")
+    hrp.CFrame = CFrame.new(targetPos + Vector3.new(0, 2, 0))
+    task.wait(0.5)
+
+    -- Force interact with prompt
+    local fired = false
+    for i = 1, 10 do
+        for _, obj in pairs(workspace:GetDescendants()) do
+            if obj:IsA("ProximityPrompt") and obj.Name == promptName then
+                local dist = (obj.Parent.Position - hrp.Position).Magnitude
+                if dist <= 30 then
+                    fireproximityprompt(obj)
+                    fired = true
+                    break
+                end
+            end
+        end
+        if fired then break end
+        task.wait(0.5)
+    end
+    
+    log(fired and "OPERATION SUCCESSFUL" or "INTERACTION FAILED")
 end
 
 -- // auto skill loop
@@ -440,7 +383,7 @@ task.spawn(function()
                 bountyCapHit = true
                 stopSkill()
                 log("CAP REACHED — GOING SAFE")
-                task.spawn(transitToSafeZone)
+                executeTransit("Starter", STARTER_POS, nil)
             end
         end)
         task.wait(1)
@@ -448,10 +391,31 @@ task.spawn(function()
 end)
 
 -- // bindings
-BtnTransit.MouseButton1Click:Connect(function()  task.spawn(transitToWorld)    end)
-BtnSafeZone.MouseButton1Click:Connect(function() task.spawn(transitToSafeZone) end)
-BtnJungle.MouseButton1Click:Connect(function()   task.spawn(transitToJungle)   end)
-BtnKillHaki.MouseButton1Click:Connect(function() task.spawn(purgeHaki)         end)
+BtnTransit.MouseButton1Click:Connect(function() 
+    if game.PlaceId == SEA_1_ID then log("ALREADY IN SEA 1") return end
+    task.spawn(function() executeTransit("World", DOOR_POS, "Sea2DoorPrompt") end)
+end)
+
+BtnSafeZone.MouseButton1Click:Connect(function() 
+    task.spawn(function()
+        log("TRANSITING TO SAFE ZONE...")
+        pcall(function()
+            checkRemote:InvokeServer("SoulDominion")
+            task.wait(0.1)
+            checkRemote:InvokeServer("Starter")
+            task.wait(0.2)
+            teleportRemote:FireServer("Starter")
+        end)
+        log("SAFE ZONE REACHED")
+    end)
+end)
+
+BtnJungle.MouseButton1Click:Connect(function()   
+    if game.PlaceId ~= SEA_1_ID then log("ERROR: TARGET SEA 1") return end
+    task.spawn(function() executeTransit("Jungle", CRYSTAL_POS, "CheckpointPrompt") end)
+end)
+
+BtnKillHaki.MouseButton1Click:Connect(function() task.spawn(purgeHaki) end)
 
 BtnSkill.MouseButton1Click:Connect(function()
     if bountyCapHit then
