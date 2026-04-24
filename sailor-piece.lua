@@ -47,7 +47,7 @@ getgenv().sailorPieceConfig = {
     EQUIP_ARTIFACT_SET = "Abyssal Crown",
 
     -- Misc
-    BUILD_MODE = "Luck",  -- Damage/Luck
+    BUILD_MODE = "Damage",  -- Damage/Luck
     USE_ITEM = { "Common Chest", "Rare Chest", "Epic Chest", "Legendary Chest", "Aura Crate (Untradeable)", "Cosmetic Crate (Untradeable)", "Secret Chest (Untradeable)" },
     BUY_MERCHANT = { "Race Reroll", "Trait Reroll", "Clan Reroll", "Passive Shard", "Boss Key", "Dungeon Key", "Rush Key", "Boss Ticket", "Haki Color Reroll", "Common Chest", "Rare Chest", "Epic Chest", "Legendary Chest", "Mythical Chest", "Secret Chest" },
 
