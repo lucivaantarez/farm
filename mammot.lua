@@ -116,7 +116,7 @@ getgenv().sailorPieceConfig = {
     },
     
     -- Discord
-    WEBHOOK_ITEM_NAME = { "Aura Crate", "Evolution Fragment" },
+    WEBHOOK_ITEM_NAME = { "Aura Crate" },
     WEBHOOK_URL = "https://discord.com/api/webhooks/1489367505226170430/3W21u4vaWuzWM4Mi7vf9e_jKm_XiTWh9x3GVGAFjqkIKQhErWNd4Ex_ohmoBfE0W1M7w",
     DISCORD_ID = "",
     WEBHOOK_NOTE = "",
