@@ -2,7 +2,7 @@ script_key="YrMGlHVZJYWpvtBaeKtZJOAtEBmcQbkQ";
 setfpscap(10)
 
 getgenv().sailorPieceConfig = {  
-    OPTIMIZATION = false,  -- true = optimize + show ui, false = disable ui
+    OPTIMIZATION = true,  -- true = optimize + show ui, false = disable ui
     AUTO_KICK = true,  -- Autokick if no TRADE_ITEM items left
     KICK_IF_NO_TRADE_USERNAME = false,
     TRADE_SEA_1 = true,
