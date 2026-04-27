@@ -72,7 +72,6 @@ getgenv().sailorPieceConfig = {
         "Upper Seal",
         "Vampire Omen",
         "Void Fragment",
-        "Wood",
         "World Core",
     },
 
