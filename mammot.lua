@@ -21,7 +21,7 @@ getgenv().sailorPieceConfig = {
 
     -- Reroll
     REROLL_RACE_UNTIL = { "Luckborn" },
-    REROLL_CLAN_UNTIL = { "Eminence" },
+    REROLL_CLAN_UNTIL = { "Devil" },
     REROLL_TRAIT_UNTIL = { "Emperor" },
     REROLL_STAT_UNTIL = { 
         ["Damage"] = "Z", 
