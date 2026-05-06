@@ -6,7 +6,7 @@ getgenv().sailorPieceConfig = {
     AUTO_KICK = true,  -- Autokick if no TRADE_ITEM items left
     KICK_IF_NO_TRADE_USERNAME = true,
     TRADE_SEA_1 = true,
-    TRADE_USERNAME = { "k1myebo_m799", "Alka3825250", "pgik_jkjytti41", "Sw_bancroft", "lychee_blox6776" },  -- "Username"
+    TRADE_USERNAME = { "aduhhhbrisik" },  -- "Username"
     TRADE_ITEM = {        
         "Abyss Sigil",
         "Adamantite",
